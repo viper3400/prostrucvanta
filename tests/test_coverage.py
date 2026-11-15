@@ -3,6 +3,7 @@ sys.path.insert(0, 'src/pyprojects')
 
 import tempfile
 import os
+import secrets
 import base64
 import json
 from fastapi.testclient import TestClient
@@ -47,15 +48,16 @@ def _make_app(db_path, base_path=""):
 def _get_csrf_token(client):
     # Trigger a GET to set session and cookie
     client.get("/projects")
-    # Extract csrf_token cookie
-    token = client.cookies.get("csrf_token")
-    return token or ""
+    return client._test_csrf_token
 
 def _login_client(client, user_id):
     signer = TimestampSigner(SESSION_SECRET)
-    payload = base64.b64encode(json.dumps({"user_id": user_id}).encode()).decode()
+    csrf_token = secrets.token_urlsafe(32)
+    payload = base64.b64encode(json.dumps({"user_id": user_id, "csrf_token": csrf_token}).encode()).decode()
     signed = signer.sign(payload.encode()).decode()
     client.cookies.set("session", signed)
+    client.cookies.set("csrf_token", csrf_token)
+    client._test_csrf_token = csrf_token
     return client
 
 def _create_user(app, perm="Project Access"):

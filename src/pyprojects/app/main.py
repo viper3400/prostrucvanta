@@ -44,7 +44,7 @@ def create_app(db_path: str | None = None, session_secret: str | None = None, ba
         https_only=os.getenv("PYPROJECTS_SECURE_COOKIES", "false").lower() in {"1","true","yes"},
     )
     # Support reverse proxy prefix
-    base_path = os.getenv("PYPROJECTS_BASE_PATH", base_path)
+    base_path = os.getenv("PYPROJECTS_BASE_PATH") or base_path
     if base_path:
         app.add_middleware(SubpathMiddleware, prefix=base_path)
     app.state.db = db
