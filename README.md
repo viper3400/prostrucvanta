@@ -2,55 +2,55 @@
 
 Lightweight project and task management plugin for PyHost.
 
-## Funktionsübersicht
+## Features
 
-PyProjects bietet eine schlanke Projektverwaltung mit Hauptprojekten, Unterprojekten und Tasks sowie einem interaktiven Kanban-Board.
+PyProjects provides lightweight project management with parent projects, subprojects, tasks, and an interactive Kanban board.
 
-- Hauptprojekte mit Status, Farbe, Start-/Zieldatum und Eigentümer
-- Unterprojekte pro Hauptprojekt mit eigenem Status und Farbe
-- Tasks mit Titel, Beschreibung, Status, Priorität, Fälligkeit, Zuordnung und Sortierposition
-- Projektauswahl nach Namen beim Erstellen von Tasks
-- Kanban-Board mit Drag & Drop, Filtern nach Projekt, Unterprojekt, Priorität, Bearbeiter und Suche
-- Dashboard mit Metriken: aktive Projekte, Unterprojekte, offene Tasks, überfällige Tasks, kürzlich bearbeitete Tasks
-- Google OAuth Anmeldung, Session-basiert
-- Benutzerverwaltung mit Berechtigungen `Global Administration` und `Project Access`, Schutz des letzten Administrators
-- SQLite Persistenz mit versionierten Migrationen
-- Plugin-Integration in PyHost unter `/pyprojects`, Reverse-Proxy-Unterstützung
+- Parent projects with a status, color, start date, target date, and owner
+- Subprojects for each parent project, with their own status and color
+- Tasks with a title, description, status, priority, due date, assignee, and sort position
+- Project selection by name when creating tasks
+- Kanban board with drag and drop, filters for project, subproject, priority, assignee, and search
+- Dashboard metrics: active projects, subprojects, open tasks, overdue tasks, and recently updated tasks
+- Session-based Google OAuth sign-in
+- User management with `Global Administration` and `Project Access` permissions, including protection against removing the last administrator
+- SQLite persistence with versioned migrations
+- PyHost plugin integration at `/pyprojects`, with reverse-proxy support
 
-## Architektur
+## Architecture
 
-- **FastAPI** für HTTP-Routen und Plugin-Factory
-- **Jinja2** Templates mit Tailwind CSS, Vanilla JavaScript
-- **SQLite** mit `PRAGMA user_version` Migrationen
-- **Authlib** für Google OAuth OpenID Connect
-- **Starlette SessionMiddleware** für sichere Session-Cookies
-- **SubpathMiddleware** für Reverse-Proxy-Prefixe
-- Plugin-Vertrag über Entry-Point `tool_host.plugins` → `app.plugin:PLUGIN`
+- **FastAPI** for HTTP routes and the plugin factory
+- **Jinja2** templates with Tailwind CSS and vanilla JavaScript
+- **SQLite** with `PRAGMA user_version` migrations
+- **Authlib** for Google OAuth OpenID Connect
+- **Starlette SessionMiddleware** for secure session cookies
+- **SubpathMiddleware** for reverse-proxy prefixes
+- Plugin contract via the `tool_host.plugins` entry point → `app.plugin:PLUGIN`
 
-Modularer Aufbau:
-- `app/main.py` – App Factory, Routen, Middleware
-- `app/db.py` – Datenbankverbindung und Migrationen
-- `app/auth.py` – Google Login, Berechtigungen
+Module layout:
+- `app/main.py` – app factory, routes, middleware
+- `app/db.py` – database connection and migrations
+- `app/auth.py` – Google sign-in and permissions
 - `app/middleware.py` – Subpath handling
 - `app/security.py` – CSRF Middleware
-- `app/templates/` – Jinja2 Views
-- `src/pyprojects/app/static/input.css` – Tailwind-Eingabe und eigene UI-Komponenten
-- `src/pyprojects/app/static/app.css` – generiertes, mit dem Plugin ausgeliefertes Stylesheet
+- `app/templates/` – Jinja2 views
+- `src/pyprojects/app/static/input.css` – Tailwind input and custom UI components
+- `src/pyprojects/app/static/app.css` – generated stylesheet bundled with the plugin
 
-## Frontend-Styles
+## Frontend styles
 
-Die Oberfläche verwendet Tailwind CSS. Die gepinnte Tailwind-CLI-Version steht in `package-lock.json`. Node.js/npm werden nur für die Entwicklung oder zum Regenerieren des CSS benötigt:
+The UI uses Tailwind CSS. The pinned Tailwind CLI version is specified in `package-lock.json`. Node.js/npm are only needed for development or to regenerate the CSS:
 
 ```bash
 npm ci
 npm run build:css
 ```
 
-Der Build scannt die Jinja2-Templates und schreibt das fertige Stylesheet nach `src/pyprojects/app/static/app.css`. Dieses generierte CSS ist im Repository enthalten und wird mit dem Python-Paket ausgeliefert; der laufende Server benötigt weder Node.js noch eine CDN-Verbindung.
+The build scans the Jinja2 templates and writes the compiled stylesheet to `src/pyprojects/app/static/app.css`. This generated CSS is included in the repository and shipped with the Python package; the running server requires neither Node.js nor a CDN connection.
 
-## Installation in PyHost
+## Installing in PyHost
 
-Für die lokale Entwicklung müssen `py-projects` und `pyhost` als Geschwisterverzeichnisse ausgecheckt sein. PyProjects wird in die virtuelle Umgebung von PyHost installiert:
+For local development, check out `py-projects` and `pyhost` into sibling directories. PyProjects is installed into PyHost's virtual environment:
 
 ```bash
 uv sync --extra test
@@ -60,44 +60,44 @@ uv pip install --python ../pyhost/.venv/bin/python -e .
 uv run --project ../pyhost pyhost --reload
 ```
 
-Der PyHost-Server ist danach standardmäßig unter `http://127.0.0.1:8000` erreichbar; PyProjects wird unter `/pyprojects/` eingebunden. Wenn Port 8000 belegt ist, kann PyHost beispielsweise mit `--port 8001` gestartet werden.
+The PyHost server is then available at `http://127.0.0.1:8000` by default, with PyProjects mounted at `/pyprojects/`. If port 8000 is already in use, you can start PyHost with a different port, for example `--port 8001`.
 
-Abhängigkeiten werden über `pyproject.toml` verwaltet. Python 3.13+ erforderlich. PyProjects implementiert den PyHost-Pluginvertrag strukturell und benötigt PyHost nicht als Projektabhängigkeit.
+Dependencies are managed through `pyproject.toml`. Python 3.13+ is required. PyProjects implements the PyHost plugin contract structurally and does not require PyHost as a project dependency.
 
-## Konfiguration
+## Configuration
 
-Kopiere `.env.example` nach `.env`:
+Copy `.env.example` to `.env`:
 
 ```bash
 cp .env.example .env
 ```
 
-Variablen:
+Environment variables:
 - `GOOGLE_CLIENT_ID` – Google OAuth Client ID
 - `GOOGLE_CLIENT_SECRET` – Google OAuth Client Secret
-- `PYPROJECTS_SESSION_SECRET` – Zufälliger 32-Byte Secret für Session Cookies
-- `PYPROJECTS_SECURE_COOKIES` – `true`/`false` für HTTPS-only Cookies
-- `PYPROJECTS_DB` – Pfad zur SQLite Datenbank, Standard `data/pyprojects.db`
-- `PYPROJECTS_BASE_PATH` – Optionaler Reverse-Proxy-Prefix, z.B. `/tools/pyprojects`
+- `PYPROJECTS_SESSION_SECRET` – Random 32-byte secret for session cookies
+- `PYPROJECTS_SECURE_COOKIES` – `true`/`false` to enable HTTPS-only cookies
+- `PYPROJECTS_DB` – Path to the SQLite database; defaults to `data/pyprojects.db`
+- `PYPROJECTS_BASE_PATH` – Optional reverse-proxy prefix, e.g. `/tools/pyprojects`
 
-## Google-OAuth-Einrichtung
+## Google OAuth setup
 
-1. In Google Cloud Console ein OAuth 2.0 Client erstellen
-2. Authorized Redirect URI setzen auf die vollständige Callback-Adresse. Lokal ohne Host-Präfix ist das `http://localhost:8000/pyprojects/auth/google/callback`. Mit PyHost-Präfix `/pyhost` lautet sie `http://localhost:8000/pyhost/pyprojects/auth/google/callback`.
-3. Client ID und Secret in `.env` eintragen
-4. Plugin starten und unter `/pyprojects/login` (mit Host-Präfix `/pyhost`: `/pyhost/pyprojects/login`) **Anmelden mit Google** wählen.
+1. Create an OAuth 2.0 client in the Google Cloud Console.
+2. Set the authorized redirect URI to the full callback URL. Locally, without a host prefix, use `http://localhost:8000/pyprojects/auth/google/callback`. With the PyHost prefix `/pyhost`, use `http://localhost:8000/pyhost/pyprojects/auth/google/callback`.
+3. Add the client ID and secret to `.env`.
+4. Start the plugin and select **Sign in with Google** at `/pyprojects/login` (with the `/pyhost` host prefix: `/pyhost/pyprojects/login`).
 
-Erster Login legt Benutzer an und vergibt automatisch `Global Administration`.
+The first sign-in creates a user and automatically grants `Global Administration`.
 
-## Eigenständiger Start (ohne PyHost)
+## Running standalone (without PyHost)
 
 ```bash
 uv run uvicorn app.main:create_app --factory --reload
 ```
 
-App läuft auf `http://localhost:8000`. `PYPROJECTS_BASE_PATH` ist nur für einen Reverse-Proxy-Präfix beim eigenständigen Betrieb gedacht. Bei PyHost übernimmt PyHost den gemeinsamen Präfix über `TOOL_HOST_BASE_PATH` oder `X-Forwarded-Prefix`; `PYPROJECTS_BASE_PATH` dafür nicht setzen.
+The app runs at `http://localhost:8000`. `PYPROJECTS_BASE_PATH` is only intended for a reverse-proxy prefix when running standalone. With PyHost, the host handles the shared prefix through `TOOL_HOST_BASE_PATH` or `X-Forwarded-Prefix`; do not set `PYPROJECTS_BASE_PATH` for this.
 
-## PyHost-Integration
+## PyHost integration
 
 Entry Point in `pyproject.toml`:
 
@@ -106,13 +106,13 @@ Entry Point in `pyproject.toml`:
 pyprojects = "app.plugin:PLUGIN"
 ```
 
-Plugin wird automatisch entdeckt, Pfad `/pyprojects`, App Factory liefert FastAPI App.
+The plugin is discovered automatically at `/pyprojects`; the app factory provides the FastAPI app.
 
-## Datenbankpfad
+## Database path
 
-Standard `data/pyprojects.db`. Überschreibbar via `PYPROJECTS_DB`. Migrationen laufen automatisch beim Start via `Database.initialize()`.
+Defaults to `data/pyprojects.db`. Override the path with `PYPROJECTS_DB`. Migrations run automatically at startup through `Database.initialize()`.
 
-## Reverse-Proxy-Beispiel
+## Reverse proxy example
 
 Nginx:
 ```nginx
@@ -123,48 +123,48 @@ location /tools/pyprojects/ {
 }
 ```
 
-Beim eigenständigen Betrieb kann zusätzlich die Plugin-Umgebung gesetzt werden:
+When running standalone, you can also set the plugin environment variable:
 ```
 PYPROJECTS_BASE_PATH=/tools/pyprojects
 ```
 
-Bei PyHost stattdessen den gemeinsamen Host-Präfix konfigurieren (`TOOL_HOST_BASE_PATH=/tools` oder den vom vertrauenswürdigen Proxy gelieferten Header `X-Forwarded-Prefix: /tools`). Der Plugin-Pfad `/pyprojects` wird vom Host ergänzt.
+With PyHost, configure the shared host prefix instead (`TOOL_HOST_BASE_PATH=/tools` or the `X-Forwarded-Prefix: /tools` header provided by a trusted proxy). The host adds the plugin path `/pyprojects`.
 
-## Tests
+## Testing
 
 ```bash
 uv run pytest
 ```
 
-Tests decken ab:
-1. Plugin-Erkennung
-2. CRUD Hauptprojekte/Unterprojekte/Tasks
-3. Task-Zuordnung und Statusänderungen
-4. Kanban-Sortierung und Konsistenz
-5. Berechtigungen, Zugriff ohne Anmeldung
-6. Administratorrechte, Schutz letzter Admin
-7. Datenbankmigrationen
-8. Ungültige Eingaben
-9. URL-Prefix Betrieb
-10. Fehlerfälle und konkurrierende Änderungen
+Tests cover:
+1. Plugin discovery
+2. CRUD operations for parent projects, subprojects, and tasks
+3. Task assignment and status updates
+4. Kanban ordering and consistency
+5. Permissions and unauthenticated access
+6. Administrator permissions and protection of the last administrator
+7. Database migrations
+8. Invalid input
+9. URL prefix handling
+10. Error cases and concurrent changes
 
-## Wheel Build
+## Building the wheel
 
 ```bash
 uv build
 ```
 
-Erzeugt `dist/pyprojects-0.1.0-py3-none-any.whl`.
+Creates `dist/pyprojects-0.1.0-py3-none-any.whl`.
 
-## Release-Vorgehen
+## Release process
 
-1. Version in `pyproject.toml` und `src/pyprojects/app/version.py` erhöhen
-2. `CHANGES.md` aktualisieren
-3. Tests laufen lassen: `uv run pytest`
-4. Build: `uv build`
-5. Wheel in PyPI oder internem Index veröffentlichen
-6. Conventional Commits verwenden: `feat: ...`, `fix: ...`
+1. Bump the version in `pyproject.toml` and `src/pyprojects/app/version.py`.
+2. Update `CHANGES.md`.
+3. Run the tests: `uv run pytest`.
+4. Build the package: `uv build`.
+5. Publish the wheel to PyPI or an internal index.
+6. Use Conventional Commits: `feat: ...`, `fix: ...`.
 
-## Lizenz
+## License
 
-Siehe Repository.
+See the repository.
