@@ -1,7 +1,45 @@
+# Byte-compiled files and Python caches
 __pycache__/
-*.pyc
-.env
-data/
+*.py[cod]
+*$py.class
+
+# Virtual environments
 .venv/
-node_modules/
+venv/
+env/
+ENV/
+
+# Packaging and build output
+build/
 dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# Tests, coverage and type checking
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.tox/
+.nox/
+
+# Environment files and local data
+.env
+.env.*
+!.env.example
+data/
+downloads/
+node_modules/
+*.db
+*.sqlite
+*.sqlite3
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
