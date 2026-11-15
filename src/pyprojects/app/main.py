@@ -289,6 +289,12 @@ def create_app(db_path: str | None = None, session_secret: str | None = None, ba
                     "SELECT id, name FROM projects ORDER BY name"
                 )
             ]
+            subprojects = [
+                dict(row)
+                for row in conn.execute(
+                    "SELECT id, project_id, name FROM subprojects ORDER BY name"
+                )
+            ]
             tasks = [dict(r) for r in conn.execute("""
                 SELECT t.*, p.name as project_name, p.color as project_color,
                        s.name as subproject_name, u.name as assignee_name
@@ -301,7 +307,12 @@ def create_app(db_path: str | None = None, session_secret: str | None = None, ba
         return templates.TemplateResponse(
             request,
             "tasks.html",
-            {"current_user": user, "tasks": tasks, "projects": projects},
+            {
+                "current_user": user,
+                "tasks": tasks,
+                "projects": projects,
+                "subprojects": subprojects,
+            },
         )
 
     @app.post("/tasks")
