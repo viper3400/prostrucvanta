@@ -29,9 +29,9 @@
         <h2>{{status}}</h2>
         <span class="column-count">{{tasks|selectattr('status','equalto',status)|list|length}}</span>
       </header>
-      <div id="col-{{status}}" class="column-tasks" ondrop="drop(event, '{{status}}')" ondragover="allowDrop(event)">
+      <div id="col-{{status}}" class="column-tasks" ondrop="drop(event, '{{status}}')" ondragover="allowDrop(event)" ondragleave="leaveColumn(event)">
         {% for t in tasks if t.status==status %}
-        <article class="task-card" style="--project-color:{{t.project_color or '#4f46e5'}}" draggable="true" data-id="{{t.id}}" ondragstart="drag(event)">
+        <article class="task-card" style="--project-color:{{t.project_color or '#4f46e5'}}" draggable="true" data-id="{{t.id}}" data-priority="{{t.priority}}" data-assignee="{{t.assignee_id or ''}}" ondragstart="drag(event)" ondragend="endDrag(event)">
           <h3>{{t.title}}</h3>
           <p class="task-project"><span class="task-project-dot" aria-hidden="true"></span><span class="task-project-name">{{t.project_name}}</span>{% if t.subproject_name %}<span aria-hidden="true">/</span><span class="task-subproject-name">{{t.subproject_name}}</span>{% endif %}</p>
           <div class="task-meta">
@@ -48,16 +48,33 @@
     {% endfor %}
   </div>
 </div>
+<p id="board-feedback" class="board-feedback" role="status" aria-live="polite"></p>
 <script>
-function allowDrop(ev){ev.preventDefault();}
-function drag(ev){ev.dataTransfer.setData('text/plain', ev.currentTarget.dataset.id); ev.dataTransfer.effectAllowed='move';}
+function allowDrop(ev){ev.preventDefault(); ev.dataTransfer.dropEffect='move'; ev.currentTarget.classList.add('is-drag-over');}
+function leaveColumn(ev){if (!ev.currentTarget.contains(ev.relatedTarget)) ev.currentTarget.classList.remove('is-drag-over');}
+function drag(ev){
+  const card = ev.currentTarget;
+  ev.dataTransfer.setData('text/plain', JSON.stringify({id:card.dataset.id, priority:card.dataset.priority, assignee:card.dataset.assignee}));
+  ev.dataTransfer.effectAllowed='move';
+  card.classList.add('is-dragging');
+}
+function endDrag(ev){ev.currentTarget.classList.remove('is-dragging'); document.querySelectorAll('.is-drag-over').forEach(column => column.classList.remove('is-drag-over'));}
 function drop(ev, status){
   ev.preventDefault();
-  const id = ev.dataTransfer.getData('text/plain');
-  if (!id) return;
-  const formData = new URLSearchParams({id, status, position:'0'});
+  ev.currentTarget.classList.remove('is-drag-over');
+  let task;
+  try { task = JSON.parse(ev.dataTransfer.getData('text/plain')); } catch (_) { return; }
+  if (!task.id) return;
+  const formData = new URLSearchParams({id:task.id, status, position:'0', priority:task.priority || '', assignee_id:task.assignee || ''});
   const csrf = document.cookie.split('; ').find(row => row.startsWith('csrf_token='))?.split('=')[1] || '';
-  fetch('{{ request.scope.root_path }}/kanban/update', {method:'POST', headers:{'X-CSRF-Token':decodeURIComponent(csrf)}, body:formData}).then(() => location.reload());
+  const feedback = document.getElementById('board-feedback');
+  feedback.textContent = 'Task wird verschoben …';
+  fetch('{{ request.scope.root_path }}/kanban/update', {method:'POST', headers:{'X-CSRF-Token':decodeURIComponent(csrf)}, body:formData})
+    .then(response => {
+      if (!response.ok) throw new Error('Verschieben fehlgeschlagen (' + response.status + ').');
+      location.reload();
+    })
+    .catch(error => { feedback.textContent = error.message; });
 }
 </script>
 {% endblock %}
