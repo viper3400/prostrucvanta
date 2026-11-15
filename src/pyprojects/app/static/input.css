@@ -75,11 +75,14 @@
   .column-heading h2 { margin: 0; color: #334155; font-size: 13px; font-weight: 700; }
   .column-count { display: grid; min-width: 24px; height: 24px; place-items: center; border-radius: 8px; background: white; color: #64748b; font-size: 11px; font-weight: 650; box-shadow: 0 1px 3px #0f172a0c; }
   .column-tasks { display: flex; min-height: 170px; flex-direction: column; gap: 9px; padding: 10px; }
-  .task-card { cursor: grab; border: 1px solid #e8edf4; border-radius: 12px; background: white; padding: 13px; box-shadow: 0 2px 5px #0f172a08; transition: border-color .15s, box-shadow .15s, transform .15s; }
+  .task-card { cursor: grab; border: 1px solid #e8edf4; border-left: 3px solid var(--project-color, #4f46e5); border-radius: 12px; background: white; padding: 13px; box-shadow: 0 2px 5px #0f172a08; transition: border-color .15s, box-shadow .15s, transform .15s; }
   .task-card:hover { transform: translateY(-2px); border-color: #c7d2fe; box-shadow: 0 7px 16px #33415512; }
   .task-card:active { cursor: grabbing; }
   .task-card h3 { margin: 0; color: #1e293b; font-size: 13px; font-weight: 650; line-height: 1.45; }
-  .task-project { overflow: hidden; margin: 6px 0 10px; color: #94a3b8; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+  .task-project { display: flex; min-width: 0; align-items: center; gap: 5px; overflow: hidden; margin: 7px 0 10px; color: #64748b; font-size: 11px; white-space: nowrap; }
+  .task-project-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--project-color, #4f46e5); box-shadow: 0 0 0 3px color-mix(in srgb, var(--project-color, #4f46e5) 13%, white); }
+  .task-project-name { overflow: hidden; color: #475569; font-weight: 650; text-overflow: ellipsis; }
+  .task-subproject-name { overflow: hidden; color: #94a3b8; text-overflow: ellipsis; }
   .task-meta { display: flex; flex-wrap: wrap; gap: 6px; }
   .priority-chip, .due-chip { border-radius: 6px; background: #f1f5f9; padding: 4px 7px; color: #475569; font-size: 10px; font-weight: 600; }
   .due-chip { background: #fff1f2; color: #be123c; }
