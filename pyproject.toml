@@ -20,10 +20,10 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [project.entry-points."tool_host.plugins"]
-prostrucvanta = "app.plugin:PLUGIN"
+prostrucvanta = "prostrucvanta.app.plugin:PLUGIN"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/prostrucvanta/app"]
+packages = ["src/prostrucvanta"]
 
 [tool.uv.workspace]
 members = []
