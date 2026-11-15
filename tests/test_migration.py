@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, 'src/pyprojects')
+sys.path.insert(0, 'src/prostrucvanta')
 import tempfile, os
 from app.db import Database
 

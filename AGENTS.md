@@ -1,8 +1,8 @@
-# Agent instructions for PyProjects
+# Agent instructions for ProStrucVanta
 
 ## Project overview
 
-PyProjects is a FastAPI plugin for PyHost providing lightweight project and task management with Kanban board.
+ProStrucVanta is a FastAPI plugin for PyHost providing lightweight project and task management with Kanban board.
 It follows FeedVanta patterns for plugin registration, Google OAuth, SQLite persistence, session handling, permissions, and packaging.
 
 - Use `uv` for dependency management.
@@ -20,7 +20,7 @@ It follows FeedVanta patterns for plugin registration, Google OAuth, SQLite pers
 ## Plugin contract
 
 Entry point `tool_host.plugins` exports `app.plugin:PLUGIN`.
-Plugin provides `id`, `name`, `description`, `version`, `path="/pyprojects"`, `app_factory`, optional `lifespan`.
+Plugin provides `id`, `name`, `description`, `version`, `path="/prostrucvanta"`, `app_factory`, optional `lifespan`.
 
 ## Tests
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{% block title %}PyProjects{% endblock %}</title>
+<title>{% block title %}ProStrucVanta{% endblock %}</title>
 <link rel="stylesheet" href="{{ request.scope.root_path }}/static/app.css">
 <meta name="csrf-token" content="">
 </head>
@@ -11,7 +11,7 @@
 <main class="shell">
 {% if current_user %}
 <header class="topbar">
-<a class="brand" href="{{ request.scope.root_path }}/"><span class="brand-mark">P</span><span><strong>PyProjects</strong><small>Deine Projekte im Blick</small></span></a>
+<a class="brand" href="{{ request.scope.root_path }}/"><span class="brand-mark">P</span><span><strong>ProStrucVanta</strong><small>Deine Projekte im Blick</small></span></a>
 <nav class="nav-links">
 <a href="{{ request.scope.root_path }}/">Übersicht</a>
 <a href="{{ request.scope.root_path }}/projects">Projekte</a>
@@ -23,7 +23,7 @@
 {% endif %}
 </nav>
 {% else %}
-<a class="brand" href="{{ request.scope.root_path }}/"><span class="brand-mark">P</span><strong>PyProjects</strong></a>
+<a class="brand" href="{{ request.scope.root_path }}/"><span class="brand-mark">P</span><strong>ProStrucVanta</strong></a>
 {% endif %}
 </header>
 <section class="page-content">{% block content %}{% endblock %}</section>

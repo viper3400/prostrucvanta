@@ -1,7 +1,7 @@
 import sys
 from urllib.parse import parse_qs, urlparse
 import tempfile
-sys.path.insert(0, 'src/pyprojects')
+sys.path.insert(0, 'src/prostrucvanta')
 from app.middleware import RedirectPrefixMiddleware, SubpathMiddleware, normalize_base_path
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
@@ -11,9 +11,9 @@ def test_subpath():
     app = FastAPI()
     @app.get("/test")
     def t(): return {"ok": True}
-    app.add_middleware(SubpathMiddleware, prefix="/pyprojects")
+    app.add_middleware(SubpathMiddleware, prefix="/prostrucvanta")
     client = TestClient(app, raise_server_exceptions=False)
-    r = client.get("/pyprojects/test")
+    r = client.get("/prostrucvanta/test")
     assert r.status_code == 200
     assert r.json() == {"ok": True}
     print('subpath OK')
@@ -23,13 +23,13 @@ def test_redirect_preserves_mount_prefix():
     app = FastAPI()
     @app.get("/")
     def home(request: Request):
-        request.scope["root_path"] = "/pyhost/pyprojects"
+        request.scope["root_path"] = "/pyhost/prostrucvanta"
         from starlette.responses import RedirectResponse
         return RedirectResponse("/login", status_code=303)
     app.add_middleware(RedirectPrefixMiddleware)
     client = TestClient(app, follow_redirects=False)
     response = client.get("/")
-    assert response.headers["location"] == "/pyhost/pyprojects/login"
+    assert response.headers["location"] == "/pyhost/prostrucvanta/login"
 
 
 def test_google_oauth_callback_url_when_mounted(monkeypatch):
@@ -37,16 +37,16 @@ def test_google_oauth_callback_url_when_mounted(monkeypatch):
     monkeypatch.setenv("GOOGLE_CLIENT_SECRET", "test-secret")
     with tempfile.TemporaryDirectory() as directory:
         host = FastAPI()
-        host.mount("/pyprojects", create_app(
+        host.mount("/prostrucvanta", create_app(
             db_path=f"{directory}/test.db",
             session_secret="test-session-secret",
         ))
         client = TestClient(host, follow_redirects=False)
-        response = client.get("/pyprojects/auth/google")
+        response = client.get("/prostrucvanta/auth/google")
     assert response.status_code == 302
     location = urlparse(response.headers["location"])
     callback = parse_qs(location.query)["redirect_uri"][0]
-    assert callback == "http://testserver/pyprojects/auth/google/callback"
+    assert callback == "http://testserver/prostrucvanta/auth/google/callback"
 
 if __name__ == '__main__':
     test_subpath()

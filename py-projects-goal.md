@@ -1,12 +1,12 @@
-# Entwicklungsauftrag: PyProjects – Projektverwaltung als PyHost-Plugin
+# Entwicklungsauftrag: ProStrucVanta – Projektverwaltung als PyHost-Plugin
 
 ## 1. Rolle und Zielsetzung
 
 Du bist ein erfahrener Senior Python Full-Stack Developer und Softwarearchitekt mit Schwerpunkt FastAPI, SQLite, OAuth 2.0, modernen Weboberflächen und modularen Plugin-Systemen.
 
-Deine Aufgabe ist die Konzeption und Implementierung eines neuen Plugins namens **PyProjects** für die bestehende PyHost-Plattform.
+Deine Aufgabe ist die Konzeption und Implementierung eines neuen Plugins namens **ProStrucVanta** für die bestehende PyHost-Plattform.
 
-PyProjects soll eine schlanke, benutzerfreundliche Projektverwaltung sein, die Hauptprojekte, Unterprojekte und Tasks organisiert und ein interaktives Kanban-Board bereitstellt.
+ProStrucVanta soll eine schlanke, benutzerfreundliche Projektverwaltung sein, die Hauptprojekte, Unterprojekte und Tasks organisiert und ein interaktives Kanban-Board bereitstellt.
 
 Die Anwendung soll keine umfangreiche Projektmanagement-Suite werden, sondern ein bewusst einfaches, wartbares und gut integriertes Werkzeug.
 
@@ -29,7 +29,7 @@ Analysiere insbesondere:
 - Plugin-Lifecycle
 - Installation, Paketierung und Tests
 
-PyProjects muss als eigenständiges, installierbares Python-Paket funktionieren.
+ProStrucVanta muss als eigenständiges, installierbares Python-Paket funktionieren.
 
 Verwende den bestehenden Entry-Point-Mechanismus `tool_host.plugins`.
 
@@ -67,7 +67,7 @@ FeedVanta ist die maßgebliche Vorlage für:
 
 Übernimm bewährte Konzepte, aber kopiere keinen unnötigen FeedVanta-spezifischen Code.
 
-Stelle sicher, dass PyProjects technisch unabhängig von FeedVanta installiert und betrieben werden kann.
+Stelle sicher, dass ProStrucVanta technisch unabhängig von FeedVanta installiert und betrieben werden kann.
 
 ## 3. Funktionaler Umfang
 
@@ -273,13 +273,13 @@ Globale Administratoren können:
 - Benutzer anzeigen
 - Globale Administratorrechte vergeben
 - Globale Administratorrechte entziehen
-- Zugriffe auf PyProjects verwalten
+- Zugriffe auf ProStrucVanta verwalten
 
 Der letzte globale Administrator darf nicht entfernt werden.
 
 Zusätzlich soll eine Berechtigung `Project Access` existieren.
 
-Normale Benutzer benötigen diese Berechtigung, um PyProjects verwenden zu dürfen. Globale Administratoren erhalten Zugriff unabhängig von dieser zusätzlichen Berechtigung.
+Normale Benutzer benötigen diese Berechtigung, um ProStrucVanta verwenden zu dürfen. Globale Administratoren erhalten Zugriff unabhängig von dieser zusätzlichen Berechtigung.
 
 Für die erste Version gilt:
 
@@ -296,7 +296,7 @@ PyHost selbst stellt nicht automatisch eine gemeinsame Benutzeridentität für a
 
 Prüfe deshalb die tatsächliche Authentifizierungsarchitektur von FeedVanta.
 
-Implementiere PyProjects zunächst mit einer eigenen, von FeedVanta unabhängigen Authentifizierungs- und Benutzerdatenhaltung nach demselben Muster.
+Implementiere ProStrucVanta zunächst mit einer eigenen, von FeedVanta unabhängigen Authentifizierungs- und Benutzerdatenhaltung nach demselben Muster.
 
 Eine gemeinsame Anmeldung über mehrere Plugins darf nicht vorausgesetzt oder simuliert werden.
 
@@ -401,14 +401,14 @@ Vermeide unnötige Animationen und visuelle Überladung.
 
 ## 7. Plugin-Integration in PyHost
 
-PyProjects muss den vorhandenen Plugin-Vertrag erfüllen.
+ProStrucVanta muss den vorhandenen Plugin-Vertrag erfüllen.
 
 Vorgesehene Metadaten:
 
-- ID: `pyprojects`
-- Name: `PyProjects`
+- ID: `prostrucvanta`
+- Name: `ProStrucVanta`
 - Beschreibung: `Lightweight project and task management`
-- Plugin-Pfad: `/pyprojects`
+- Plugin-Pfad: `/prostrucvanta`
 
 Registrierung über:
 
@@ -416,7 +416,7 @@ Registrierung über:
 
 Beispiel:
 
-`pyprojects = "app.plugin:PLUGIN"`
+`prostrucvanta = "app.plugin:PLUGIN"`
 
 Die genaue Implementierung muss mit dem aktuellen PyHost-Vertrag übereinstimmen.
 
@@ -427,7 +427,7 @@ Das Plugin soll:
 - Eine eigene FastAPI-App bereitstellen
 - Einen eigenen Datenbank-Lifecycle besitzen
 - Keine Änderungen am PyHost-Core erfordern
-- Unter `/pyprojects/` erreichbar sein
+- Unter `/prostrucvanta/` erreichbar sein
 
 ### Reverse Proxy
 
@@ -442,7 +442,7 @@ Unterstütze bestehende PyHost-Mechanismen für:
 
 Teste insbesondere verschachtelte externe Pfade wie:
 
-`https://example.com/tools/pyprojects/`
+`https://example.com/tools/prostrucvanta/`
 
 Übernimm keine fest verdrahteten absoluten URL-Pfade, die beim Betrieb hinter einem Reverse Proxy fehlschlagen.
 

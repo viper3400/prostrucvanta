@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "build:css": "tailwindcss -i src/pyprojects/app/static/input.css -o src/pyprojects/app/static/app.css --minify"
+    "build:css": "tailwindcss -i src/prostrucvanta/app/static/input.css -o src/prostrucvanta/app/static/app.css --minify"
   },
   "devDependencies": {
     "@tailwindcss/cli": "4.3.5",

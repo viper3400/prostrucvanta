@@ -555,6 +555,42 @@ wheels = [
 ]
 
 [[package]]
+name = "prostrucvanta"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "authlib" },
+    { name = "fastapi" },
+    { name = "httpx2" },
+    { name = "itsdangerous" },
+    { name = "jinja2" },
+    { name = "python-dotenv" },
+    { name = "python-multipart" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
+[package.optional-dependencies]
+test = [
+    { name = "httpx" },
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "authlib", specifier = ">=1.3,<2" },
+    { name = "fastapi", specifier = ">=0.115,<1" },
+    { name = "httpx", marker = "extra == 'test'", specifier = ">=0.27" },
+    { name = "httpx2", specifier = ">=2.0,<3" },
+    { name = "itsdangerous", specifier = ">=2.2,<3" },
+    { name = "jinja2", specifier = ">=3.1,<4" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=9,<10" },
+    { name = "python-dotenv", specifier = ">=1.0,<2" },
+    { name = "python-multipart", specifier = ">=0.0.9,<1" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.30,<1" },
+]
+provides-extras = ["test"]
+
+[[package]]
 name = "pycparser"
 version = "3.12"
 source = { registry = "https://pypi.org/simple" }
@@ -676,42 +712,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/49/2e/ced460408999b33da
 wheels = [
     { url = "https://files.pythonhosted.org/packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl", hash = "sha256:2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9", size = 1250147, upload-time = "2026-08-17T08:02:44.912Z" },
 ]
-
-[[package]]
-name = "pyprojects"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "authlib" },
-    { name = "fastapi" },
-    { name = "httpx2" },
-    { name = "itsdangerous" },
-    { name = "jinja2" },
-    { name = "python-dotenv" },
-    { name = "python-multipart" },
-    { name = "uvicorn", extra = ["standard"] },
-]
-
-[package.optional-dependencies]
-test = [
-    { name = "httpx" },
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "authlib", specifier = ">=1.3,<2" },
-    { name = "fastapi", specifier = ">=0.115,<1" },
-    { name = "httpx", marker = "extra == 'test'", specifier = ">=0.27" },
-    { name = "httpx2", specifier = ">=2.0,<3" },
-    { name = "itsdangerous", specifier = ">=2.2,<3" },
-    { name = "jinja2", specifier = ">=3.1,<4" },
-    { name = "pytest", marker = "extra == 'test'", specifier = ">=9,<10" },
-    { name = "python-dotenv", specifier = ">=1.0,<2" },
-    { name = "python-multipart", specifier = ">=0.0.9,<1" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.30,<1" },
-]
-provides-extras = ["test"]
 
 [[package]]
 name = "pytest"

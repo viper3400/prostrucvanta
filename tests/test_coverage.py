@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, 'src/pyprojects')
+sys.path.insert(0, 'src/prostrucvanta')
 
 import tempfile
 import os
@@ -357,11 +357,11 @@ def test_delete_subproject_with_tasks_409():
 def test_url_prefix_end_to_end():
     with tempfile.TemporaryDirectory() as td:
         db_path = os.path.join(td, "db.sqlite")
-        app = _make_app(db_path, base_path="/pyprojects")
+        app = _make_app(db_path, base_path="/prostrucvanta")
         uid = _create_user(app)
         client = TestClient(app, raise_server_exceptions=False, follow_redirects=False)
         _login_client(client, uid)
-        r = client.get("/pyprojects/projects")
+        r = client.get("/prostrucvanta/projects")
         assert r.status_code == 200
         # without prefix should be 404
         r2 = client.get("/projects")

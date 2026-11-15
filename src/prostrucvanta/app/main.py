@@ -34,7 +34,7 @@ def create_app(db_path: str | None = None, session_secret: str | None = None, ba
     db.initialize()
     auth_service = AuthService(db)
 
-    app = FastAPI(title="PyProjects", version=APP_VERSION)
+    app = FastAPI(title="ProStrucVanta", version=APP_VERSION)
     app.add_middleware(RedirectPrefixMiddleware)
     app.add_middleware(CsrfMiddleware)
     app.add_middleware(

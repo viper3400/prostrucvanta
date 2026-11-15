@@ -1,10 +1,10 @@
-# PyProjects
+# ProStrucVanta
 
 Lightweight project and task management plugin for PyHost.
 
 ## Features
 
-PyProjects provides lightweight project management with parent projects, subprojects, tasks, and an interactive Kanban board.
+ProStrucVanta provides lightweight project management with parent projects, subprojects, tasks, and an interactive Kanban board.
 
 - Parent projects with a status, color, start date, target date, and owner
 - Subprojects for each parent project, with their own status and color
@@ -15,7 +15,7 @@ PyProjects provides lightweight project management with parent projects, subproj
 - Session-based Google OAuth sign-in
 - User management with `Global Administration` and `Project Access` permissions, including protection against removing the last administrator
 - SQLite persistence with versioned migrations
-- PyHost plugin integration at `/pyprojects`, with reverse-proxy support
+- PyHost plugin integration at `/prostrucvanta`, with reverse-proxy support
 
 ## Architecture
 
@@ -34,8 +34,8 @@ Module layout:
 - `app/middleware.py` – Subpath handling
 - `app/security.py` – CSRF Middleware
 - `app/templates/` – Jinja2 views
-- `src/pyprojects/app/static/input.css` – Tailwind input and custom UI components
-- `src/pyprojects/app/static/app.css` – generated stylesheet bundled with the plugin
+- `src/prostrucvanta/app/static/input.css` – Tailwind input and custom UI components
+- `src/prostrucvanta/app/static/app.css` – generated stylesheet bundled with the plugin
 
 ## Frontend styles
 
@@ -46,11 +46,11 @@ npm ci
 npm run build:css
 ```
 
-The build scans the Jinja2 templates and writes the compiled stylesheet to `src/pyprojects/app/static/app.css`. This generated CSS is included in the repository and shipped with the Python package; the running server requires neither Node.js nor a CDN connection.
+The build scans the Jinja2 templates and writes the compiled stylesheet to `src/prostrucvanta/app/static/app.css`. This generated CSS is included in the repository and shipped with the Python package; the running server requires neither Node.js nor a CDN connection.
 
 ## Installing in PyHost
 
-For local development, check out `py-projects` and `pyhost` into sibling directories. PyProjects is installed into PyHost's virtual environment:
+For local development, check out `prostrucvanta` and `pyhost` into sibling directories. ProStrucVanta is installed into PyHost's virtual environment:
 
 ```bash
 uv sync --extra test
@@ -60,9 +60,9 @@ uv pip install --python ../pyhost/.venv/bin/python -e .
 uv run --project ../pyhost pyhost --reload
 ```
 
-The PyHost server is then available at `http://127.0.0.1:8000` by default, with PyProjects mounted at `/pyprojects/`. If port 8000 is already in use, you can start PyHost with a different port, for example `--port 8001`.
+The PyHost server is then available at `http://127.0.0.1:8000` by default, with ProStrucVanta mounted at `/prostrucvanta/`. If port 8000 is already in use, you can start PyHost with a different port, for example `--port 8001`.
 
-Dependencies are managed through `pyproject.toml`. Python 3.13+ is required. PyProjects implements the PyHost plugin contract structurally and does not require PyHost as a project dependency.
+Dependencies are managed through `pyproject.toml`. Python 3.13+ is required. ProStrucVanta implements the PyHost plugin contract structurally and does not require PyHost as a project dependency.
 
 ## Configuration
 
@@ -78,14 +78,14 @@ Environment variables:
 - `PYPROJECTS_SESSION_SECRET` – Random 32-byte secret for session cookies
 - `PYPROJECTS_SECURE_COOKIES` – `true`/`false` to enable HTTPS-only cookies
 - `PYPROJECTS_DB` – Path to the SQLite database; defaults to `data/pyprojects.db`
-- `PYPROJECTS_BASE_PATH` – Optional reverse-proxy prefix, e.g. `/tools/pyprojects`
+- `PYPROJECTS_BASE_PATH` – Optional reverse-proxy prefix, e.g. `/tools/prostrucvanta`
 
 ## Google OAuth setup
 
 1. Create an OAuth 2.0 client in the Google Cloud Console.
-2. Set the authorized redirect URI to the full callback URL. Locally, without a host prefix, use `http://localhost:8000/pyprojects/auth/google/callback`. With the PyHost prefix `/pyhost`, use `http://localhost:8000/pyhost/pyprojects/auth/google/callback`.
+2. Set the authorized redirect URI to the full callback URL. Locally, without a host prefix, use `http://localhost:8000/prostrucvanta/auth/google/callback`. With the PyHost prefix `/pyhost`, use `http://localhost:8000/pyhost/prostrucvanta/auth/google/callback`.
 3. Add the client ID and secret to `.env`.
-4. Start the plugin and select **Sign in with Google** at `/pyprojects/login` (with the `/pyhost` host prefix: `/pyhost/pyprojects/login`).
+4. Start the plugin and select **Sign in with Google** at `/prostrucvanta/login` (with the `/pyhost` host prefix: `/pyhost/prostrucvanta/login`).
 
 The first sign-in creates a user and automatically grants `Global Administration`.
 
@@ -103,10 +103,10 @@ Entry Point in `pyproject.toml`:
 
 ```toml
 [project.entry-points."tool_host.plugins"]
-pyprojects = "app.plugin:PLUGIN"
+prostrucvanta = "app.plugin:PLUGIN"
 ```
 
-The plugin is discovered automatically at `/pyprojects`; the app factory provides the FastAPI app.
+The plugin is discovered automatically at `/prostrucvanta`; the app factory provides the FastAPI app.
 
 ## Database path
 
@@ -116,7 +116,7 @@ Defaults to `data/pyprojects.db`. Override the path with `PYPROJECTS_DB`. Migrat
 
 Nginx:
 ```nginx
-location /tools/pyprojects/ {
+location /tools/prostrucvanta/ {
     proxy_pass http://pyhost/;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
@@ -125,10 +125,10 @@ location /tools/pyprojects/ {
 
 When running standalone, you can also set the plugin environment variable:
 ```
-PYPROJECTS_BASE_PATH=/tools/pyprojects
+PYPROJECTS_BASE_PATH=/tools/prostrucvanta
 ```
 
-With PyHost, configure the shared host prefix instead (`TOOL_HOST_BASE_PATH=/tools` or the `X-Forwarded-Prefix: /tools` header provided by a trusted proxy). The host adds the plugin path `/pyprojects`.
+With PyHost, configure the shared host prefix instead (`TOOL_HOST_BASE_PATH=/tools` or the `X-Forwarded-Prefix: /tools` header provided by a trusted proxy). The host adds the plugin path `/prostrucvanta`.
 
 ## Testing
 
@@ -154,11 +154,11 @@ Tests cover:
 uv build
 ```
 
-Creates `dist/pyprojects-0.1.0-py3-none-any.whl`.
+Creates `dist/prostrucvanta-0.1.0-py3-none-any.whl`.
 
 ## Release process
 
-1. Bump the version in `pyproject.toml` and `src/pyprojects/app/version.py`.
+1. Bump the version in `pyproject.toml` and `src/prostrucvanta/app/version.py`.
 2. Update `CHANGES.md`.
 3. Run the tests: `uv run pytest`.
 4. Build the package: `uv build`.

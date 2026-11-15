@@ -4,7 +4,7 @@
 Initial MVP implementation with projects, subprojects, tasks, kanban, Google OAuth, user permissions.
 
 ### Features
-- Plugin contract `pyprojects` with path `/pyprojects` and app_factory
+- Plugin contract `prostrucvanta` with path `/prostrucvanta` and app_factory
 - Google OAuth authentication with Authlib, session handling
 - SQLite persistence with versioned migrations v001, v002
 - Projects CRUD with status, color, dates, owner

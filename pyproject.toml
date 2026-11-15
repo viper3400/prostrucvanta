@@ -1,5 +1,5 @@
 [project]
-name = "pyprojects"
+name = "prostrucvanta"
 version = "0.1.0"
 description = "Lightweight project and task management"
 readme = "README.md"
@@ -20,10 +20,10 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [project.entry-points."tool_host.plugins"]
-pyprojects = "app.plugin:PLUGIN"
+prostrucvanta = "app.plugin:PLUGIN"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pyprojects/app"]
+packages = ["src/prostrucvanta/app"]
 
 [tool.uv.workspace]
 members = []
