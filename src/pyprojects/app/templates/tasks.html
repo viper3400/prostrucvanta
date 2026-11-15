@@ -1,33 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 class="text-2xl mb-4">Tasks</h1>
-<form method="post" action="{{ request.scope.root_path }}/tasks" class="bg-white p-4 rounded shadow mb-4 grid grid-cols-3 gap-2">
-<input name="title" placeholder="Titel" required class="border p-2">
-<select name="project_id" required class="border p-2">
-<option value="" disabled selected>Projekt auswählen</option>
-{% for project in projects %}<option value="{{project.id}}">{{project.name}}</option>{% endfor %}
-</select>
-<select name="status" class="border p-2"><option>Backlog</option><option>Offen</option><option>In Bearbeitung</option><option>Blockiert</option><option>Erledigt</option></select>
-<select name="priority" class="border p-2"><option>Niedrig</option><option>Normal</option><option>Hoch</option><option>Kritisch</option></select>
-<button class="bg-blue-600 text-white px-3 py-2 rounded">Erstellen</button>
-</form>
-<table class="w-full bg-white rounded shadow overflow-hidden">
-<thead class="bg-slate-200"><tr><th class="p-2 text-left">Titel</th><th class="p-2">Projekt</th><th class="p-2">Unterprojekt</th><th class="p-2">Status</th><th class="p-2">Priorität</th><th class="p-2">Zugewiesen</th><th class="p-2">Aktionen</th></tr></thead>
-<tbody>
-{% for t in tasks %}
-<tr class="border-t">
-<td class="p-2">{{t.title}}</td>
-<td class="p-2">{{t.project_name}}</td>
-<td class="p-2">{{t.subproject_name or ''}}</td>
-<td class="p-2">{{t.status}}</td>
-<td class="p-2">{{t.priority}}</td>
-<td class="p-2">{{t.assignee_name or ''}}</td>
-<td class="p-2">
-<form method="post" action="{{ request.scope.root_path }}/tasks/{{t.id}}/duplicate" class="inline"><button class="text-xs">Duplizieren</button></form>
-<form method="post" action="{{ request.scope.root_path }}/tasks/{{t.id}}/delete" class="inline"><button class="text-xs text-red-600">Löschen</button></form>
-</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
+<header class="page-heading">
+  <div><p class="eyebrow">AUFGABENPLANUNG</p><h1>Tasks</h1><p>Verwalte Aufgaben, Prioritäten und Zuständigkeiten an einem Ort.</p></div>
+  <a class="button button-primary" href="#task-create">＋ Task erstellen</a>
+</header>
+
+<section class="create-panel task-create" id="task-create">
+  <div class="section-title"><span class="section-icon">＋</span><div><h2>Neue Aufgabe</h2><p>Erfasse eine Aufgabe und ordne sie einem Projekt zu.</p></div></div>
+  <form method="post" action="{{ request.scope.root_path }}/tasks" class="task-create-form">
+    <label class="field task-title-field"><span>Titel</span><input name="title" placeholder="Was muss erledigt werden?" required></label>
+    <label class="field"><span>Projekt</span><select name="project_id" required><option value="" disabled selected>Projekt auswählen</option>{% for project in projects %}<option value="{{project.id}}">{{project.name}}</option>{% endfor %}</select></label>
+    <label class="field"><span>Status</span><select name="status"><option>Backlog</option><option>Offen</option><option>In Bearbeitung</option><option>Blockiert</option><option>Erledigt</option></select></label>
+    <label class="field"><span>Priorität</span><select name="priority"><option>Niedrig</option><option selected>Normal</option><option>Hoch</option><option>Kritisch</option></select></label>
+    <button class="button button-primary task-create-button" type="submit">Task erstellen</button>
+  </form>
+</section>
+
+<section class="panel task-list-panel">
+  <div class="panel-heading"><div><p class="eyebrow">AUFGABENÜBERSICHT</p><h2>Alle Tasks</h2></div><span class="project-total">{{ tasks|length }} Aufgaben</span></div>
+  {% if tasks %}
+  <div class="task-table-scroll"><table class="modern-table">
+    <thead><tr><th>Aufgabe</th><th>Projekt</th><th>Status</th><th>Priorität</th><th>Zugewiesen</th><th><span class="sr-only">Aktionen</span></th></tr></thead>
+    <tbody>{% for t in tasks %}
+      <tr>
+        <td><strong class="table-task-title">{{t.title}}</strong>{% if t.subproject_name %}<small class="table-subtitle">{{t.subproject_name}}</small>{% endif %}</td>
+        <td><span class="table-project" style="--project-color:{{t.project_color or '#4f46e5'}}"><i></i>{{t.project_name}}</span></td>
+        <td><span class="table-status status-{{ t.status|lower|replace(' ', '-') }}">{{t.status}}</span></td>
+        <td><span class="table-priority priority-{{ t.priority|lower }}">{{t.priority}}</span></td>
+        <td class="table-muted">{{t.assignee_name or 'Nicht zugewiesen'}}</td>
+        <td class="table-actions">
+          <form method="post" action="{{ request.scope.root_path }}/tasks/{{t.id}}/duplicate"><button class="action-button" type="submit">Duplizieren</button></form>
+          <form method="post" action="{{ request.scope.root_path }}/tasks/{{t.id}}/delete" onsubmit="return confirm('Task löschen?')"><button class="action-button action-delete" type="submit">Löschen</button></form>
+        </td>
+      </tr>
+    {% endfor %}</tbody>
+  </table></div>
+  {% else %}
+  <div class="empty-state task-empty"><span class="empty-icon">✓</span><h2>Noch keine Tasks</h2><p>Erstelle deine erste Aufgabe über das Formular oben.</p></div>
+  {% endif %}
+</section>
 {% endblock %}

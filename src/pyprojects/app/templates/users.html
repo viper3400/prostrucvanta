@@ -1,27 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 class="text-2xl mb-4">Benutzerverwaltung</h1>
-<table class="w-full bg-white rounded shadow overflow-hidden">
-<thead class="bg-slate-200"><tr><th class="p-2 text-left">E-Mail</th><th class="p-2">Name</th><th class="p-2">Project Access</th><th class="p-2">Global Admin</th></tr></thead>
-<tbody>
-{% for u in users %}
-<tr class="border-t">
-<td class="p-2">{{u.email}}</td>
-<td class="p-2">{{u.name}}</td>
-<td class="p-2 text-center">
-<form method="post" action="{{ request.scope.root_path }}/admin/users/{{u.id}}/project-access">
-<input type="hidden" name="enabled" value="1">
-<button class="text-xs">{{ 'Entfernen' if 'Project Access' in u.permissions else 'Gewähren' }}</button>
-</form>
-</td>
-<td class="p-2 text-center">
-<form method="post" action="{{ request.scope.root_path }}/admin/users/{{u.id}}/global-administration">
-<input type="hidden" name="enabled" value="1">
-<button class="text-xs">{{ 'Entfernen' if 'Global Administration' in u.permissions else 'Gewähren' }}</button>
-</form>
-</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
+<header class="page-heading">
+  <div><p class="eyebrow">ZUGRIFF &amp; BERECHTIGUNGEN</p><h1>Benutzerverwaltung</h1><p>Steuere, wer Projekte nutzen und den Workspace administrieren kann.</p></div>
+  <a class="button button-secondary" href="{{ request.scope.root_path }}/admin">← Administration</a>
+</header>
+<section class="panel task-list-panel">
+  <div class="panel-heading"><div><p class="eyebrow">WORKSPACE</p><h2>Benutzer &amp; Rollen</h2></div><span class="project-total">{{ users|length }} Benutzer</span></div>
+  <div class="task-table-scroll"><table class="modern-table user-table">
+    <thead><tr><th>Benutzer</th><th>Projektzugriff</th><th>Administration</th></tr></thead>
+    <tbody>{% for u in users %}
+      <tr>
+        <td><div class="user-identity"><span class="user-avatar">{{ (u.name or u.email)[0]|upper }}</span><span><strong>{{u.name or 'Unbenannt'}}</strong><small>{{u.email}}</small></span></div></td>
+        <td><form method="post" action="{{ request.scope.root_path }}/admin/users/{{u.id}}/project-access" class="permission-form"><input type="hidden" name="enabled" value="1"><span class="permission-state {{ 'permission-enabled' if 'Project Access' in u.permissions else '' }}">{{ 'Aktiv' if 'Project Access' in u.permissions else 'Kein Zugriff' }}</span><button class="action-button {{ 'action-delete' if 'Project Access' in u.permissions else 'action-edit' }}">{{ 'Entfernen' if 'Project Access' in u.permissions else 'Gewähren' }}</button></form></td>
+        <td><form method="post" action="{{ request.scope.root_path }}/admin/users/{{u.id}}/global-administration" class="permission-form"><input type="hidden" name="enabled" value="1"><span class="permission-state {{ 'permission-enabled' if 'Global Administration' in u.permissions else '' }}">{{ 'Admin' if 'Global Administration' in u.permissions else 'Standard' }}</span><button class="action-button {{ 'action-delete' if 'Global Administration' in u.permissions else 'action-edit' }}">{{ 'Entfernen' if 'Global Administration' in u.permissions else 'Gewähren' }}</button></form></td>
+      </tr>
+    {% endfor %}</tbody>
+  </table></div>
+</section>
 {% endblock %}

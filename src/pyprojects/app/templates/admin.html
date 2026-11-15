@@ -1,5 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 class="text-2xl mb-4">Administration</h1>
-<a href="{{ request.scope.root_path }}/admin/users" class="bg-white p-4 rounded shadow block w-max">Benutzerverwaltung</a>
+<header class="page-heading">
+  <div><p class="eyebrow">WORKSPACE EINSTELLUNGEN</p><h1>Administration</h1><p>Verwalte Zugänge und Berechtigungen für deinen Workspace.</p></div>
+</header>
+<section class="admin-grid">
+  <article class="admin-card">
+    <span class="admin-card-icon">♙</span>
+    <p class="eyebrow">ZUGRIFF &amp; BERECHTIGUNGEN</p>
+    <h2>Benutzerverwaltung</h2>
+    <p>Verwalte Projektzugriff und globale Administrationsrechte für alle Benutzer.</p>
+    <a class="button button-primary" href="{{ request.scope.root_path }}/admin/users">Benutzer verwalten <span aria-hidden="true">→</span></a>
+  </article>
+  <aside class="admin-note"><span class="admin-note-icon">i</span><div><h2>Administratorbereich</h2><p>Änderungen an Berechtigungen wirken sich unmittelbar auf den Zugriff im Workspace aus.</p></div></aside>
+</section>
 {% endblock %}

@@ -290,7 +290,8 @@ def create_app(db_path: str | None = None, session_secret: str | None = None, ba
                 )
             ]
             tasks = [dict(r) for r in conn.execute("""
-                SELECT t.*, p.name as project_name, s.name as subproject_name, u.name as assignee_name
+                SELECT t.*, p.name as project_name, p.color as project_color,
+                       s.name as subproject_name, u.name as assignee_name
                 FROM tasks t
                 JOIN projects p ON p.id=t.project_id
                 LEFT JOIN subprojects s ON s.id=t.subproject_id
