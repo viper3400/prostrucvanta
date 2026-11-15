@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+<h1 class="text-xl mb-4">Anmelden</h1>
+{% if google_configured %}
+<a href="{{ request.scope.root_path }}/auth/google" class="inline-block bg-blue-600 text-white px-4 py-2 rounded">Anmelden mit Google</a>
+{% else %}
+<p>Google OAuth nicht konfiguriert.</p>
+{% endif %}
+</div>
+{% endblock %}
