@@ -1,51 +1,73 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 class="text-2xl mb-4">Projekte</h1>
-<form method="post" action="{{ request.scope.root_path }}/projects" class="bg-white p-4 rounded shadow mb-4">
-<input name="name" placeholder="Name" required class="border p-2 mr-2">
-<input name="description" placeholder="Beschreibung" class="border p-2 mr-2">
-<select name="status" class="border p-2 mr-2">
-<option>Aktiv</option><option>Pausiert</option><option>Abgeschlossen</option><option>Archiviert</option>
-</select>
-<input type="color" name="color" value="#3b82f6" class="mr-2">
-<button class="bg-blue-600 text-white px-3 py-2 rounded">Erstellen</button>
-</form>
-<div class="grid gap-4">
-{% for p in projects %}
-<div class="bg-white p-4 rounded shadow">
-<div class="flex items-center gap-2">
-<span class="w-4 h-4 rounded" style="background:{{p.color}}"></span>
-<h2 class="font-bold">{{p.name}}</h2>
-<span class="text-sm text-gray-500">{{p.status}}</span>
-</div>
-<p class="text-sm text-gray-600">{{p.description}}</p>
-<p class="text-xs text-gray-500">Fortschritt: {{p.progress}}% ({{p.done}}/{{p.task_count}} Tasks)</p>
-<form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/edit" class="mt-2 grid grid-cols-2 gap-2 text-sm">
-<input type="hidden" name="name" value="{{p.name}}">
-<input type="hidden" name="description" value="{{p.description}}">
-<input type="hidden" name="status" value="{{p.status}}">
-<input type="hidden" name="color" value="{{p.color}}">
-<button class="text-blue-600">Bearbeiten</button>
-</form>
-<form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/archive" class="inline"><button class="text-amber-600">Archivieren</button></form>
-<form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/delete" class="inline" onsubmit="return confirm('Projekt löschen? Unterprojekte und Tasks müssen entfernt werden. Fortfahren?')"><button class="text-red-600">Löschen</button></form>
+<header class="page-heading">
+  <div><p class="eyebrow">PROJEKTARBEITSPLATZ</p><h1>Projekte</h1><p>Organisiere Vorhaben, Unterprojekte und den Fortschritt an einem Ort.</p></div>
+  <span class="project-total">{{projects|length}} Projekte</span>
+</header>
 
-<h3 class="font-semibold mt-3">Unterprojekte</h3>
-<form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/subprojects" class="flex gap-2 mb-2">
-<input name="name" placeholder="Name" required class="border p-1 text-sm">
-<select name="status" class="border p-1 text-sm"><option>Aktiv</option><option>Pausiert</option><option>Abgeschlossen</option><option>Archiviert</option></select>
-<button class="bg-slate-200 px-2 py-1 text-sm">Hinzufügen</button>
-</form>
-<ul class="text-sm">
-{% for s in p.subprojects %}
-<li class="border-b py-1 flex justify-between">
-<span>{{s.name}} ({{s.status}})</span>
-<form method="post" action="{{ request.scope.root_path }}/subprojects/{{s.id}}/archive" class="inline"><button class="text-amber-600 text-xs">Archiv</button></form>
-<form method="post" action="{{ request.scope.root_path }}/subprojects/{{s.id}}/delete" class="inline" onsubmit="return confirm('Unterprojekt löschen? Tasks müssen entfernt werden. Fortfahren?')"><button class="text-red-600 text-xs">X</button></form>
-</li>
-{% endfor %}
-</ul>
-</div>
-{% endfor %}
+<section class="create-panel">
+  <div class="section-title"><span class="section-icon" aria-hidden="true">+</span><div><h2>Neues Projekt</h2><p>Lege ein Projekt an und halte dein Team auf Kurs.</p></div></div>
+  <form method="post" action="{{ request.scope.root_path }}/projects" class="create-project-form">
+    <label class="field"><span>Projektname</span><input name="name" placeholder="z. B. Website-Relaunch" required></label>
+    <label class="field field-description"><span>Beschreibung</span><input name="description" placeholder="Worum geht es bei diesem Projekt?"></label>
+    <label class="field"><span>Status</span><select name="status"><option>Aktiv</option><option>Pausiert</option><option>Abgeschlossen</option><option>Archiviert</option></select></label>
+    <label class="field color-field"><span>Projektfarbe</span><input type="color" name="color" value="#4f46e5"></label>
+    <button class="button button-primary create-button">Projekt erstellen</button>
+  </form>
+</section>
+
+<div class="project-list">
+  {% for p in projects %}
+  <article class="project-card">
+    <header class="project-card-heading">
+      <div class="project-identity">
+        <span class="project-color" style="--project-color:{{p.color}}"></span>
+        <div><h2>{{p.name}}</h2><p>{{p.description or 'Keine Beschreibung hinterlegt'}}</p></div>
+      </div>
+      <span class="status-pill">{{p.status}}</span>
+    </header>
+    <div class="project-progress">
+      <div class="progress-label"><span>Fortschritt</span><strong>{{p.progress}}%</strong></div>
+      <div class="progress-track"><span style="width:{{p.progress}}%"></span></div>
+      <small>{{p.done}} von {{p.task_count}} Tasks erledigt</small>
+    </div>
+    <div class="project-actions">
+      <form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/edit">
+        <input type="hidden" name="name" value="{{p.name}}">
+        <input type="hidden" name="description" value="{{p.description}}">
+        <input type="hidden" name="status" value="{{p.status}}">
+        <input type="hidden" name="color" value="{{p.color}}">
+        <button class="action-button action-edit" type="submit"><span aria-hidden="true">✎</span> Bearbeiten</button>
+      </form>
+      <form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/archive"><button class="action-button" type="submit">Archivieren</button></form>
+      <form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/delete" onsubmit="return confirm('Projekt löschen? Unterprojekte und Tasks müssen entfernt werden. Fortfahren?')"><button class="action-button action-delete" type="submit">Löschen</button></form>
+    </div>
+
+    <section class="subproject-section">
+      <div class="subproject-heading"><div><h3>Unterprojekte</h3><span>{{p.subprojects|length}} Bereiche</span></div></div>
+      <form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/subprojects" class="subproject-create">
+        <label class="sr-only" for="subproject-{{p.id}}">Name des Unterprojekts</label>
+        <input id="subproject-{{p.id}}" name="name" placeholder="Unterprojekt hinzufügen …" required>
+        <label class="sr-only" for="subproject-status-{{p.id}}">Status</label>
+        <select id="subproject-status-{{p.id}}" name="status"><option>Aktiv</option><option>Pausiert</option><option>Abgeschlossen</option><option>Archiviert</option></select>
+        <button class="button button-secondary" type="submit">Hinzufügen</button>
+      </form>
+      {% if p.subprojects %}
+      <ul class="subproject-list">
+        {% for s in p.subprojects %}
+        <li><span class="subproject-name"><span class="subproject-dot"></span>{{s.name}}</span><span class="subproject-status">{{s.status}}</span>
+          <div class="subproject-actions">
+            <form method="post" action="{{ request.scope.root_path }}/subprojects/{{s.id}}/archive"><button class="action-button" type="submit">Archivieren</button></form>
+            <form method="post" action="{{ request.scope.root_path }}/subprojects/{{s.id}}/delete" onsubmit="return confirm('Unterprojekt löschen? Tasks müssen entfernt werden. Fortfahren?')"><button class="action-button action-delete" type="submit" aria-label="Unterprojekt {{s.name}} löschen">Löschen</button></form>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}<p class="subproject-empty">Noch keine Unterprojekte angelegt.</p>{% endif %}
+    </section>
+  </article>
+  {% else %}
+  <section class="empty-state"><span class="empty-icon" aria-hidden="true">✦</span><h2>Dein erstes Projekt wartet</h2><p>Erstelle oben ein Projekt, um Aufgaben und Fortschritt zu organisieren.</p></section>
+  {% endfor %}
 </div>
 {% endblock %}

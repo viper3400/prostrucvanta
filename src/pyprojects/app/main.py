@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 from fastapi import Depends, FastAPI, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from authlib.integrations.starlette_client import OAuth, OAuthError
@@ -50,6 +51,7 @@ def create_app(db_path: str | None = None, session_secret: str | None = None, ba
     app.state.auth_service = auth_service
 
     templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+    app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
     oauth = OAuth()
     client_id = os.getenv("GOOGLE_CLIENT_ID")

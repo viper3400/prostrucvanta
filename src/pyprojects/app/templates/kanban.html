@@ -1,44 +1,63 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 class="text-2xl mb-4">Kanban Board</h1>
-<form method="get" class="bg-white p-3 rounded shadow mb-4 flex gap-2 flex-wrap">
-<select name="project" class="border p-1"><option value="">Alle Projekte</option>{% for pr in projects %}<option value="{{pr.id}}" {% if selected_project==pr.id %}selected{% endif %}>{{pr.name}}</option>{% endfor %}</select>
-<select name="subproject" class="border p-1"><option value="">Alle Unterprojekte</option>{% for sp in subprojects %}<option value="{{sp.id}}" {% if selected_subproject==sp.id %}selected{% endif %}>{{sp.name}}</option>{% endfor %}</select>
-<select name="priority" class="border p-1"><option value="">Alle Prioritäten</option>{% for p in priorities %}<option value="{{p}}" {% if selected_priority==p %}selected{% endif %}>{{p}}</option>{% endfor %}</select>
-<select name="assignee" class="border p-1"><option value="">Alle Benutzer</option>{% for u in users %}<option value="{{u.id}}" {% if selected_assignee==u.id %}selected{% endif %}>{{u.name}}</option>{% endfor %}</select>
-<input name="search" placeholder="Suche" value="{{search}}" class="border p-1">
-<button class="bg-blue-600 text-white px-2 py-1 rounded">Filter</button>
+<header class="page-heading">
+  <div>
+    <p class="eyebrow">ARBEITSÜBERSICHT</p>
+    <h1>Kanban-Board</h1>
+    <p>Behalte den Fortschritt deiner Tasks im Blick und verschiebe sie per Drag &amp; Drop.</p>
+  </div>
+  <a href="{{ request.scope.root_path }}/tasks" class="button button-primary">Tasks verwalten <span aria-hidden="true">→</span></a>
+</header>
+
+<form method="get" class="filter-panel">
+  <div class="filter-heading"><div><h2>Board filtern</h2><p>Grenze die angezeigten Tasks ein.</p></div></div>
+  <div class="filter-controls">
+    <label class="field"><span>Projekt</span><select name="project"><option value="">Alle Projekte</option>{% for pr in projects %}<option value="{{pr.id}}" {% if selected_project==pr.id %}selected{% endif %}>{{pr.name}}</option>{% endfor %}</select></label>
+    <label class="field"><span>Unterprojekt</span><select name="subproject"><option value="">Alle Unterprojekte</option>{% for sp in subprojects %}<option value="{{sp.id}}" {% if selected_subproject==sp.id %}selected{% endif %}>{{sp.name}}</option>{% endfor %}</select></label>
+    <label class="field"><span>Priorität</span><select name="priority"><option value="">Alle Prioritäten</option>{% for p in priorities %}<option value="{{p}}" {% if selected_priority==p %}selected{% endif %}>{{p}}</option>{% endfor %}</select></label>
+    <label class="field"><span>Bearbeiter</span><select name="assignee"><option value="">Alle Benutzer</option>{% for u in users %}<option value="{{u.id}}" {% if selected_assignee==u.id %}selected{% endif %}>{{u.name}}</option>{% endfor %}</select></label>
+    <label class="field field-search"><span>Suche</span><input name="search" placeholder="Task suchen …" value="{{search}}"></label>
+    <button class="button button-primary filter-submit" type="submit">Filter anwenden</button>
+  </div>
 </form>
-<div class="grid grid-cols-5 gap-4">
-{% for status in statuses %}
-<div class="bg-slate-100 p-2 rounded">
-<h3 class="font-bold mb-2">{{status}} <span class="text-xs">({{tasks|selectattr('status','equalto',status)|list|length}})</span></h3>
-<div id="col-{{status}}" class="space-y-2 min-h-[200px]" ondrop="drop(event, '{{status}}')" ondragover="allowDrop(event)">
-{% for t in tasks if t.status==status %}
-<div class="bg-white p-3 rounded shadow cursor-move" draggable="true" data-id="{{t.id}}" ondragstart="drag(event)">
-<div class="font-semibold">{{t.title}}</div>
-<div class="text-xs text-gray-500">{{t.project_name}}{% if t.subproject_name %} / {{t.subproject_name}}{% endif %}</div>
-<div class="text-xs">Priorität: {{t.priority}}</div>
-{% if t.due_date %}<div class="text-xs text-red-600">Fällig: {{t.due_date}}</div>{% endif %}
-{% if t.assignee_name %}<div class="text-xs">Zugewiesen: {{t.assignee_name}}</div>{% endif %}
-</div>
-{% endfor %}
-</div>
-</div>
-{% endfor %}
+
+<div class="board-scroll">
+  <div class="board-grid">
+    {% for status in statuses %}
+    <section class="board-column">
+      <header class="column-heading">
+        <h2>{{status}}</h2>
+        <span class="column-count">{{tasks|selectattr('status','equalto',status)|list|length}}</span>
+      </header>
+      <div id="col-{{status}}" class="column-tasks" ondrop="drop(event, '{{status}}')" ondragover="allowDrop(event)">
+        {% for t in tasks if t.status==status %}
+        <article class="task-card" draggable="true" data-id="{{t.id}}" ondragstart="drag(event)">
+          <h3>{{t.title}}</h3>
+          <p class="task-project">{{t.project_name}}{% if t.subproject_name %}<span aria-hidden="true"> / </span>{{t.subproject_name}}{% endif %}</p>
+          <div class="task-meta">
+            <span class="priority-chip">{{t.priority}}</span>
+            {% if t.due_date %}<span class="due-chip">Fällig {{t.due_date}}</span>{% endif %}
+          </div>
+          {% if t.assignee_name %}<p class="task-assignee"><span class="avatar-dot">{{t.assignee_name[:1]}}</span>{{t.assignee_name}}</p>{% endif %}
+        </article>
+        {% else %}
+        <p class="column-empty">Keine Tasks in diesem Status</p>
+        {% endfor %}
+      </div>
+    </section>
+    {% endfor %}
+  </div>
 </div>
 <script>
 function allowDrop(ev){ev.preventDefault();}
-function drag(ev){ev.dataTransfer.setData('text/plain', ev.target.dataset.id);}
+function drag(ev){ev.dataTransfer.setData('text/plain', ev.currentTarget.dataset.id); ev.dataTransfer.effectAllowed='move';}
 function drop(ev, status){
   ev.preventDefault();
   const id = ev.dataTransfer.getData('text/plain');
-  const formData = new FormData();
-  formData.append('id', id);
-  formData.append('status', status);
-  formData.append('position', '0');
-  fetch('{{ request.scope.root_path }}/kanban/update', {method:'POST', body: new URLSearchParams(formData)});
-  location.reload();
+  if (!id) return;
+  const formData = new URLSearchParams({id, status, position:'0'});
+  const csrf = document.cookie.split('; ').find(row => row.startsWith('csrf_token='))?.split('=')[1] || '';
+  fetch('{{ request.scope.root_path }}/kanban/update', {method:'POST', headers:{'X-CSRF-Token':decodeURIComponent(csrf)}, body:formData}).then(() => location.reload());
 }
 </script>
 {% endblock %}

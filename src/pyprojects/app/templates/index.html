@@ -1,16 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 class="text-2xl mb-4">Dashboard</h1>
-<div class="grid grid-cols-3 gap-4 mb-6">
-<div class="bg-white p-4 rounded shadow">Aktive Projekte: {{ active_projects }}</div>
-<div class="bg-white p-4 rounded shadow">Unterprojekte: {{ subprojects }}</div>
-<div class="bg-white p-4 rounded shadow">Offene Tasks: {{ open_tasks }}</div>
-<div class="bg-white p-4 rounded shadow">Überfällige Tasks: {{ overdue }}</div>
+<header class="page-heading"><div><p class="eyebrow">PROJEKTÜBERSICHT</p><h1>Dashboard</h1><p>Ein schneller Überblick über den aktuellen Stand deiner Arbeit.</p></div><a class="button button-primary" href="{{ request.scope.root_path }}/tasks">Task erstellen →</a></header>
+<div class="stats-grid">
+<article class="metric"><span>Aktive Projekte</span><strong>{{ active_projects }}</strong><small>Projekte in Arbeit</small></article>
+<article class="metric"><span>Unterprojekte</span><strong>{{ subprojects }}</strong><small>Organisierte Bereiche</small></article>
+<article class="metric"><span>Offene Tasks</span><strong>{{ open_tasks }}</strong><small>Warten auf Erledigung</small></article>
+<article class="metric metric-alert"><span>Überfällige Tasks</span><strong>{{ overdue }}</strong><small>Benötigen Aufmerksamkeit</small></article>
 </div>
-<h2 class="text-xl mb-2">Kürzlich bearbeitete Tasks</h2>
-<ul class="bg-white rounded shadow divide-y">
+<section class="panel">
+<div class="panel-heading"><div><p class="eyebrow">ZULETZT AKTUALISIERT</p><h2>Kürzlich bearbeitete Tasks</h2></div><a href="{{ request.scope.root_path }}/tasks">Alle Tasks ansehen →</a></div>
+<ul class="recent-list">
 {% for r in recent %}
-<li class="p-3">{{r.title}} - {{r.updated_at}}</li>
+<li><span class="task-icon">✓</span><span class="task-title">{{r.title}}</span><time>{{r.updated_at}}</time></li>
 {% endfor %}
 </ul>
+</section>
 {% endblock %}

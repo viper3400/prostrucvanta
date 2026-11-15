@@ -34,6 +34,19 @@ Modularer Aufbau:
 - `app/middleware.py` – Subpath handling
 - `app/security.py` – CSRF Middleware
 - `app/templates/` – Jinja2 Views
+- `src/pyprojects/app/static/input.css` – Tailwind-Eingabe und eigene UI-Komponenten
+- `src/pyprojects/app/static/app.css` – generiertes, mit dem Plugin ausgeliefertes Stylesheet
+
+## Frontend-Styles
+
+Die Oberfläche verwendet Tailwind CSS. Die gepinnte Tailwind-CLI-Version steht in `package-lock.json`. Node.js/npm werden nur für die Entwicklung oder zum Regenerieren des CSS benötigt:
+
+```bash
+npm ci
+npm run build:css
+```
+
+Der Build scannt die Jinja2-Templates und schreibt das fertige Stylesheet nach `src/pyprojects/app/static/app.css`. Dieses generierte CSS ist im Repository enthalten und wird mit dem Python-Paket ausgeliefert; der laufende Server benötigt weder Node.js noch eine CDN-Verbindung.
 
 ## Installation in PyHost
 
@@ -41,6 +54,7 @@ Für die lokale Entwicklung müssen `py-projects` und `pyhost` als Geschwisterve
 
 ```bash
 uv sync --extra test
+npm ci && npm run build:css
 uv sync --project ../pyhost --all-packages
 uv pip install --python ../pyhost/.venv/bin/python -e .
 uv run --project ../pyhost pyhost --reload
