@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-<header class="page-heading"><div><p class="eyebrow">PROJEKTÜBERSICHT</p><h1>Dashboard</h1><p>Ein schneller Überblick über den aktuellen Stand deiner Arbeit.</p></div><a class="button button-primary" href="{{ request.scope.root_path }}/tasks">Task erstellen →</a></header>
+<header class="page-heading"><div><p class="eyebrow">{{ translate('PROJEKTÜBERSICHT', locale_for(request)) }}</p><h1>Dashboard</h1><p>{{ translate('Ein schneller Überblick über den aktuellen Stand deiner Arbeit.', locale_for(request)) }}</p></div><a class="button button-primary" href="{{ request.scope.root_path }}/tasks">{{ translate('Task erstellen', locale_for(request)) }} →</a></header>
 <div class="stats-grid">
-<article class="metric"><span>Aktive Projekte</span><strong>{{ active_projects }}</strong><small>Projekte in Arbeit</small></article>
-<article class="metric"><span>Unterprojekte</span><strong>{{ subprojects }}</strong><small>Organisierte Bereiche</small></article>
-<article class="metric"><span>Offene Tasks</span><strong>{{ open_tasks }}</strong><small>Warten auf Erledigung</small></article>
-<article class="metric metric-alert"><span>Überfällige Tasks</span><strong>{{ overdue }}</strong><small>Benötigen Aufmerksamkeit</small></article>
+<article class="metric"><span>{{ translate('Aktive Projekte', locale_for(request)) }}</span><strong>{{ active_projects }}</strong><small>{{ translate('Projekte in Arbeit', locale_for(request)) }}</small></article>
+<article class="metric"><span>{{ translate('Unterprojekte', locale_for(request)) }}</span><strong>{{ subprojects }}</strong><small>{{ translate('Organisierte Bereiche', locale_for(request)) }}</small></article>
+<article class="metric"><span>{{ translate('Offene Tasks', locale_for(request)) }}</span><strong>{{ open_tasks }}</strong><small>{{ translate('Warten auf Erledigung', locale_for(request)) }}</small></article>
+<article class="metric metric-alert"><span>{{ translate('Überfällige Tasks', locale_for(request)) }}</span><strong>{{ overdue }}</strong><small>{{ translate('Benötigen Aufmerksamkeit', locale_for(request)) }}</small></article>
 </div>
 <section class="panel">
-<div class="panel-heading"><div><p class="eyebrow">ZULETZT AKTUALISIERT</p><h2>Kürzlich bearbeitete Tasks</h2></div><a href="{{ request.scope.root_path }}/tasks">Alle Tasks ansehen →</a></div>
+<div class="panel-heading"><div><p class="eyebrow">{{ translate('ZULETZT AKTUALISIERT', locale_for(request)) }}</p><h2>{{ translate('Kürzlich bearbeitete Tasks', locale_for(request)) }}</h2></div><a href="{{ request.scope.root_path }}/tasks">{{ translate('Alle Tasks ansehen', locale_for(request)) }} →</a></div>
 <ul class="recent-list">
 {% for r in recent %}
 <li><span class="task-icon">✓</span><span class="task-title">{{r.title}}</span><time>{{r.updated_at}}</time></li>

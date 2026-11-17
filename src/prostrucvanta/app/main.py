@@ -16,6 +16,7 @@ from .db import Database
 from .auth import AuthService, GLOBAL_ADMINISTRATION, PROJECT_ACCESS
 from .models import utcnow
 from .version import APP_VERSION
+from .i18n import TRANSLATIONS, translate
 
 BASE_DIR = Path(__file__).parent
 load_dotenv()
@@ -51,6 +52,41 @@ def create_app(db_path: str | None = None, session_secret: str | None = None, ba
     app.state.auth_service = auth_service
 
     templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+    translations = TRANSLATIONS
+    templates.env.globals["translate"] = translate
+    def locale_for(request: Request) -> str:
+        saved = request.session.get("locale")
+        if saved in translations:
+            return saved
+        preferences = []
+        for index, item in enumerate(request.headers.get("accept-language", "").split(",")):
+            parts = item.strip().lower().split(";")
+            language = parts[0]
+            try:
+                quality = float(parts[1].removeprefix("q=")) if len(parts) > 1 else 1.0
+            except ValueError:
+                quality = 0.0
+            preferences.append((quality, -index, language))
+        for _, _, language in sorted(preferences, reverse=True):
+            if language.startswith("de"):
+                return "de"
+            if language.startswith("en"):
+                return "en"
+        return "de"
+    templates.env.globals["locale_for"] = locale_for
+    @app.post("/language")
+    async def set_language(request: Request):
+        form = await _get_form(request)
+        locale = form.get("locale")
+        if locale in translations:
+            request.session["locale"] = locale
+        referer = request.headers.get("referer", "/")
+        from urllib.parse import urlparse
+        parsed = urlparse(referer)
+        target = parsed.path if parsed.netloc == request.url.netloc else "/"
+        if parsed.query:
+            target += "?" + parsed.query
+        return RedirectResponse(target, status_code=303)
     app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
     oauth = OAuth()

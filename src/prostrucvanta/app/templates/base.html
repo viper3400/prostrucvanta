@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de">
+<html lang="{{ locale_for(request) }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -11,20 +11,26 @@
 <main class="shell">
 {% if current_user %}
 <header class="topbar">
-<a class="brand" href="{{ request.scope.root_path }}/"><span class="brand-mark">P</span><span><strong>ProStrucVanta</strong><small>Deine Projekte im Blick</small></span></a>
+<a class="brand" href="{{ request.scope.root_path }}/"><span class="brand-mark">P</span><span><strong>ProStrucVanta</strong><small>{{ translate("Your projects at a glance", locale_for(request)) }}</small></span></a>
 <nav class="nav-links">
-<a href="{{ request.scope.root_path }}/">Übersicht</a>
-<a href="{{ request.scope.root_path }}/projects">Projekte</a>
+<a href="{{ request.scope.root_path }}/">{{ translate("Overview", locale_for(request)) }}</a>
+<a href="{{ request.scope.root_path }}/projects">{{ translate("Projects", locale_for(request)) }}</a>
 <a href="{{ request.scope.root_path }}/kanban">Kanban</a>
-<a href="{{ request.scope.root_path }}/tasks">Tasks</a>
+<a href="{{ request.scope.root_path }}/tasks">{{ translate("Tasks", locale_for(request)) }}</a>
 {% if current_user %}
-<a href="{{ request.scope.root_path }}/admin">Administration</a>
-<form action="{{ request.scope.root_path }}/logout" method="post" id="logout-form"><button class="button button-dark">Abmelden</button></form>
+<a href="{{ request.scope.root_path }}/admin">{{ translate('Administration', locale_for(request)) }}</a>
+<form action="{{ request.scope.root_path }}/logout" method="post" id="logout-form"><button class="button button-dark">{{ translate("Log out", locale_for(request)) }}</button></form>
 {% endif %}
 </nav>
 {% else %}
 <a class="brand" href="{{ request.scope.root_path }}/"><span class="brand-mark">P</span><strong>ProStrucVanta</strong></a>
 {% endif %}
+<form action="{{ request.scope.root_path }}/language" method="post" class="language-switcher" aria-label="Language">
+  <select name="locale" onchange="this.form.submit()" aria-label="Language">
+    <option value="en" {% if locale_for(request) == "en" %}selected{% endif %}>English</option>
+    <option value="de" {% if locale_for(request) == "de" %}selected{% endif %}>Deutsch</option>
+  </select>
+</form>
 </header>
 <section class="page-content">{% block content %}{% endblock %}</section>
 </main>

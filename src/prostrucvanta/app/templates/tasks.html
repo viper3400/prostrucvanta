@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
 <header class="page-heading">
-  <div><p class="eyebrow">AUFGABENPLANUNG</p><h1>Tasks</h1><p>Verwalte Aufgaben, Prioritäten und Zuständigkeiten an einem Ort.</p></div>
+  <div><p class="eyebrow">{{ translate('AUFGABENPLANUNG', locale_for(request)) }}</p><h1>Tasks</h1><p>{{ translate('Verwalte Aufgaben, Prioritäten und Zuständigkeiten an einem Ort.', locale_for(request)) }}</p></div>
   <a class="button button-primary" href="#task-create">＋ Task erstellen</a>
 </header>
 
 <section class="create-panel task-create" id="task-create">
-  <div class="section-title"><span class="section-icon">＋</span><div><h2>Neue Aufgabe</h2><p>Erfasse eine Aufgabe und ordne sie einem Projekt zu.</p></div></div>
+  <div class="section-title"><span class="section-icon">＋</span><div><h2>{{ translate('Neue Aufgabe', locale_for(request)) }}</h2><p>{{ translate('Erfasse eine Aufgabe und ordne sie einem Projekt zu.', locale_for(request)) }}</p></div></div>
   <form method="post" action="{{ request.scope.root_path }}/tasks" class="task-create-form task-project-form">
-    <label class="field task-title-field"><span>Titel</span><input name="title" placeholder="Was muss erledigt werden?" required></label>
-    <label class="field"><span>Projekt</span><select name="project_id" required><option value="" disabled selected>Projekt auswählen</option>{% for project in projects %}<option value="{{project.id}}">{{project.name}}</option>{% endfor %}</select></label>
-    <label class="field"><span>Unterprojekt <small>(optional)</small></span><select name="subproject_id" disabled><option value="">Erst Projekt auswählen</option>{% for subproject in subprojects %}<option value="{{subproject.id}}" data-project-id="{{subproject.project_id}}" hidden>{{subproject.name}}</option>{% endfor %}</select></label>
-    <label class="field"><span>Status</span><select name="status"><option>Backlog</option><option>Offen</option><option>In Bearbeitung</option><option>Blockiert</option><option>Erledigt</option></select></label>
-    <label class="field"><span>Priorität</span><select name="priority"><option>Niedrig</option><option selected>Normal</option><option>Hoch</option><option>Kritisch</option></select></label>
-    <button class="button button-primary task-create-button" type="submit">Task erstellen</button>
+    <label class="field task-title-field"><span>{{ translate('Titel', locale_for(request)) }}</span><input name="title" placeholder="{{ translate('Was muss erledigt werden?', locale_for(request)) }}" required></label>
+    <label class="field"><span>{{ translate('Projekt', locale_for(request)) }}</span><select name="project_id" required><option value="" disabled selected>{{ translate('Projekt auswählen', locale_for(request)) }}</option>{% for project in projects %}<option value="{{project.id}}">{{project.name}}</option>{% endfor %}</select></label>
+    <label class="field"><span>{{ translate('Unterprojekt', locale_for(request)) }} <small>(optional)</small></span><select name="subproject_id" disabled><option value="">{{ translate('Erst Projekt auswählen', locale_for(request)) }}</option>{% for subproject in subprojects %}<option value="{{subproject.id}}" data-project-id="{{subproject.project_id}}" hidden>{{subproject.name}}</option>{% endfor %}</select></label>
+    <label class="field"><span>{{ translate('Status', locale_for(request)) }}</span><select name="status"><option>Backlog</option><option value="Offen">{{ translate('Offen', locale_for(request)) }}</option><option value="In Bearbeitung">{{ translate('In Bearbeitung', locale_for(request)) }}</option><option value="Blockiert">{{ translate('Blockiert', locale_for(request)) }}</option><option value="Erledigt">{{ translate('Erledigt', locale_for(request)) }}</option></select></label>
+    <label class="field"><span>{{ translate('Priorität', locale_for(request)) }}</span><select name="priority"><option value="Niedrig">{{ translate('Niedrig', locale_for(request)) }}</option><option value="Normal" selected>{{ translate('Normal', locale_for(request)) }}</option><option value="Hoch">{{ translate('Hoch', locale_for(request)) }}</option><option value="Kritisch">{{ translate('Kritisch', locale_for(request)) }}</option></select></label>
+    <button class="button button-primary task-create-button" type="submit">{{ translate('Task erstellen', locale_for(request)) }}</button>
   </form>
 </section>
 <script>
@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
         ? selectedSubproject : '';
       subprojectSelect.disabled = !projectId || matching.length === 0;
       subprojectSelect.options[0].textContent = !projectId
-        ? 'Erst Projekt auswählen'
-        : matching.length ? 'Kein Unterprojekt' : 'Keine Unterprojekte vorhanden';
+        ? {{ translate('Erst Projekt auswählen', locale_for(request))|tojson }}
+        : matching.length ? {{ translate('Kein Unterprojekt', locale_for(request))|tojson }} : {{ translate('Keine Unterprojekte vorhanden', locale_for(request))|tojson }};
     }
     projectSelect.addEventListener('change', () => updateSubprojects(false));
     updateSubprojects(true);
@@ -42,40 +42,40 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <section class="panel task-list-panel">
-  <div class="panel-heading"><div><p class="eyebrow">AUFGABENÜBERSICHT</p><h2>Alle Tasks</h2></div><span class="project-total">{{ tasks|length }} Aufgaben</span></div>
+  <div class="panel-heading"><div><p class="eyebrow">{{ translate('AUFGABENÜBERSICHT', locale_for(request)) }}</p><h2>{{ translate('Alle Tasks', locale_for(request)) }}</h2></div><span class="project-total">{{ tasks|length }} {{ translate('Aufgaben', locale_for(request)) }}</span></div>
   {% if tasks %}
   <div class="task-table-scroll"><table class="modern-table">
-    <thead><tr><th>Aufgabe</th><th>Projekt</th><th>Unterprojekt</th><th>Status</th><th>Priorität</th><th>Zugewiesen</th><th><span class="sr-only">Aktionen</span></th></tr></thead>
+    <thead><tr><th>{{ translate('Aufgabe', locale_for(request)) }}</th><th>{{ translate('Projekt', locale_for(request)) }}</th><th>{{ translate('Unterprojekt', locale_for(request)) }}</th><th>{{ translate('Status', locale_for(request)) }}</th><th>{{ translate('Priorität', locale_for(request)) }}</th><th>{{ translate('Zugewiesen', locale_for(request)) }}</th><th><span class="sr-only">Aktionen</span></th></tr></thead>
     <tbody>{% for t in tasks %}
       <tr>
         <td><strong class="table-task-title">{{t.title}}</strong></td>
         <td><span class="table-project" style="--project-color:{{t.project_color or '#4f46e5'}}"><i></i>{{t.project_name}}</span></td>
         <td class="table-muted">{{t.subproject_name or '—'}}</td>
-        <td><span class="table-status status-{{ t.status|lower|replace(' ', '-') }}">{{t.status}}</span></td>
-        <td><span class="table-priority priority-{{ t.priority|lower }}">{{t.priority}}</span></td>
+        <td><span class="table-status status-{{ t.status|lower|replace(' ', '-') }}">{{translate(t.status, locale_for(request))}}</span></td>
+        <td><span class="table-priority priority-{{ t.priority|lower }}">{{translate(t.priority, locale_for(request))}}</span></td>
         <td class="table-muted">{{t.assignee_name or 'Nicht zugewiesen'}}</td>
         <td class="table-actions">
-          <form method="post" action="{{ request.scope.root_path }}/tasks/{{t.id}}/duplicate"><button class="action-button" type="submit">Duplizieren</button></form>
-          <form method="post" action="{{ request.scope.root_path }}/tasks/{{t.id}}/delete" onsubmit="return confirm('Task löschen?')"><button class="action-button action-delete" type="submit">Löschen</button></form>
+          <form method="post" action="{{ request.scope.root_path }}/tasks/{{t.id}}/duplicate"><button class="action-button" type="submit">{{ translate('Duplizieren', locale_for(request)) }}</button></form>
+          <form method="post" action="{{ request.scope.root_path }}/tasks/{{t.id}}/delete" onsubmit="return confirm('{{ translate('Task löschen?', locale_for(request)) }}')"><button class="action-button action-delete" type="submit">{{ translate('Löschen', locale_for(request)) }}</button></form>
         </td>
       </tr>
       <tr class="task-edit-row"><td colspan="7">
         <details>
-          <summary class="action-button action-edit">Task bearbeiten</summary>
+          <summary class="action-button action-edit">{{ translate('Task bearbeiten', locale_for(request)) }}</summary>
           <form method="post" action="{{ request.scope.root_path }}/tasks/{{t.id}}/edit" class="task-edit-form task-project-form">
-            <label class="field"><span>Titel</span><input name="title" value="{{t.title}}" required></label>
-            <label class="field"><span>Projekt</span><select name="project_id" required>{% for project in projects %}<option value="{{project.id}}" {% if project.id == t.project_id %}selected{% endif %}>{{project.name}}</option>{% endfor %}</select></label>
-            <label class="field"><span>Unterprojekt</span><select name="subproject_id"><option value="">Kein Unterprojekt</option>{% for subproject in subprojects %}<option value="{{subproject.id}}" data-project-id="{{subproject.project_id}}" {% if subproject.id == t.subproject_id %}selected{% endif %} hidden>{{subproject.name}}</option>{% endfor %}</select></label>
-            <label class="field"><span>Status</span><select name="status">{% for status in ['Backlog', 'Offen', 'In Bearbeitung', 'Blockiert', 'Erledigt'] %}<option {% if status == t.status %}selected{% endif %}>{{status}}</option>{% endfor %}</select></label>
-            <label class="field"><span>Priorität</span><select name="priority">{% for priority in ['Niedrig', 'Normal', 'Hoch', 'Kritisch'] %}<option {% if priority == t.priority %}selected{% endif %}>{{priority}}</option>{% endfor %}</select></label>
-            <button class="button button-primary" type="submit">Änderungen speichern</button>
+            <label class="field"><span>{{ translate('Titel', locale_for(request)) }}</span><input name="title" value="{{t.title}}" required></label>
+            <label class="field"><span>{{ translate('Projekt', locale_for(request)) }}</span><select name="project_id" required>{% for project in projects %}<option value="{{project.id}}" {% if project.id == t.project_id %}selected{% endif %}>{{project.name}}</option>{% endfor %}</select></label>
+            <label class="field"><span>{{ translate('Unterprojekt', locale_for(request)) }}</span><select name="subproject_id"><option value="">{{ translate('Kein Unterprojekt', locale_for(request)) }}</option>{% for subproject in subprojects %}<option value="{{subproject.id}}" data-project-id="{{subproject.project_id}}" {% if subproject.id == t.subproject_id %}selected{% endif %} hidden>{{subproject.name}}</option>{% endfor %}</select></label>
+            <label class="field"><span>{{ translate('Status', locale_for(request)) }}</span><select name="status">{% for status in ['Backlog', 'Offen', 'In Bearbeitung', 'Blockiert', 'Erledigt'] %}<option value="{{status}}" {% if status == t.status %}selected{% endif %}>{{translate(status, locale_for(request))}}</option>{% endfor %}</select></label>
+            <label class="field"><span>{{ translate('Priorität', locale_for(request)) }}</span><select name="priority">{% for priority in ['Niedrig', 'Normal', 'Hoch', 'Kritisch'] %}<option value="{{priority}}" {% if priority == t.priority %}selected{% endif %}>{{translate(priority, locale_for(request))}}</option>{% endfor %}</select></label>
+            <button class="button button-primary" type="submit">{{ translate('Änderungen speichern', locale_for(request)) }}</button>
           </form>
         </details>
       </td></tr>
     {% endfor %}</tbody>
   </table></div>
   {% else %}
-  <div class="empty-state task-empty"><span class="empty-icon">✓</span><h2>Noch keine Tasks</h2><p>Erstelle deine erste Aufgabe über das Formular oben.</p></div>
+  <div class="empty-state task-empty"><span class="empty-icon">✓</span><h2>{{ translate('Noch keine Tasks', locale_for(request)) }}</h2><p>{{ translate('Erstelle deine erste Aufgabe über das Formular oben.', locale_for(request)) }}</p></div>
   {% endif %}
 </section>
 {% endblock %}

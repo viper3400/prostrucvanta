@@ -2,23 +2,23 @@
 {% block content %}
 <header class="page-heading">
   <div>
-    <p class="eyebrow">ARBEITSÜBERSICHT</p>
-    <h1>Kanban-Board</h1>
-    <p>Behalte den Fortschritt deiner Tasks im Blick und verschiebe sie per Drag &amp; Drop.</p>
+    <p class="eyebrow">{{ translate('ARBEITSÜBERSICHT', locale_for(request)) }}</p>
+    <h1>{{ translate('Kanban-Board', locale_for(request)) }}</h1>
+    <p>{{ translate('Behalte den Fortschritt deiner Tasks im Blick und verschiebe sie per Drag &amp; Drop.', locale_for(request)) }}</p>
   </div>
-  <a href="{{ request.scope.root_path }}/tasks" class="button button-primary">Tasks verwalten <span aria-hidden="true">→</span></a>
+  <a href="{{ request.scope.root_path }}/tasks" class="button button-primary">{{ translate('Tasks verwalten', locale_for(request)) }} <span aria-hidden="true">→</span></a>
 </header>
 
 <form method="get" class="filter-panel">
-  <div class="filter-heading"><div><h2>Board filtern</h2><p>Grenze die angezeigten Tasks ein.</p></div></div>
+  <div class="filter-heading"><div><h2>{{ translate('Board filtern', locale_for(request)) }}</h2><p>{{ translate('Grenze die angezeigten Tasks ein.', locale_for(request)) }}</p></div></div>
   <div class="filter-controls">
-    <label class="field"><span>Projekt</span><select name="project" id="project-filter"><option value="">Alle Projekte</option>{% for pr in projects %}<option value="{{pr.id}}" {% if selected_project==pr.id %}selected{% endif %}>{{pr.name}}</option>{% endfor %}</select></label>
-    <label class="field"><span>Unterprojekt</span><select name="subproject"><option value="">Alle Unterprojekte</option>{% for sp in subprojects %}<option value="{{sp.id}}" {% if selected_subproject==sp.id %}selected{% endif %}>{{sp.name}}</option>{% endfor %}</select></label>
-    <label class="field"><span>Priorität</span><select name="priority"><option value="">Alle Prioritäten</option>{% for p in priorities %}<option value="{{p}}" {% if selected_priority==p %}selected{% endif %}>{{p}}</option>{% endfor %}</select></label>
-    <label class="field"><span>Bearbeiter</span><select name="assignee"><option value="">Alle Benutzer</option>{% for u in users %}<option value="{{u.id}}" {% if selected_assignee==u.id %}selected{% endif %}>{{u.name}}</option>{% endfor %}</select></label>
-    <label class="field field-search"><span>Suche</span><input name="search" placeholder="Task suchen …" value="{{search}}"></label>
-    <button class="button button-primary filter-submit" type="submit">Filter anwenden</button>
-    <a class="button button-secondary filter-reset" href="{{ request.scope.root_path }}/kanban">Filter zurücksetzen</a>
+    <label class="field"><span>{{ translate('Projekt', locale_for(request)) }}</span><select name="project" id="project-filter"><option value="">{{ translate('Alle Projekte', locale_for(request)) }}</option>{% for pr in projects %}<option value="{{pr.id}}" {% if selected_project==pr.id %}selected{% endif %}>{{pr.name}}</option>{% endfor %}</select></label>
+    <label class="field"><span>{{ translate('Unterprojekt', locale_for(request)) }}</span><select name="subproject"><option value="">{{ translate('Alle Unterprojekte', locale_for(request)) }}</option>{% for sp in subprojects %}<option value="{{sp.id}}" {% if selected_subproject==sp.id %}selected{% endif %}>{{sp.name}}</option>{% endfor %}</select></label>
+    <label class="field"><span>{{ translate('Priorität', locale_for(request)) }}</span><select name="priority"><option value="">{{ translate('Alle Prioritäten', locale_for(request)) }}</option>{% for p in priorities %}<option value="{{p}}" {% if selected_priority==p %}selected{% endif %}>{{translate(p, locale_for(request))}}</option>{% endfor %}</select></label>
+    <label class="field"><span>{{ translate('Bearbeiter', locale_for(request)) }}</span><select name="assignee"><option value="">{{ translate('Alle Benutzer', locale_for(request)) }}</option>{% for u in users %}<option value="{{u.id}}" {% if selected_assignee==u.id %}selected{% endif %}>{{u.name}}</option>{% endfor %}</select></label>
+    <label class="field field-search"><span>{{ translate('Suche', locale_for(request)) }}</span><input name="search" placeholder="{{ translate('Task suchen …', locale_for(request)) }}" value="{{search}}"></label>
+    <button class="button button-primary filter-submit" type="submit">{{ translate('Filter anwenden', locale_for(request)) }}</button>
+    <a class="button button-secondary filter-reset" href="{{ request.scope.root_path }}/kanban">{{ translate('Filter zurücksetzen', locale_for(request)) }}</a>
   </div>
 </form>
 <script>
@@ -33,7 +33,7 @@ document.getElementById('project-filter').addEventListener('change', function ()
     {% for status in statuses %}
     <section class="board-column">
       <header class="column-heading">
-        <h2>{{status}}</h2>
+        <h2>{{translate(status, locale_for(request))}}</h2>
         <span class="column-count">{{tasks|selectattr('status','equalto',status)|list|length}}</span>
       </header>
       <div id="col-{{status}}" class="column-tasks" ondrop="drop(event, '{{status}}')" ondragover="allowDrop(event)" ondragleave="leaveColumn(event)">
@@ -45,13 +45,13 @@ document.getElementById('project-filter').addEventListener('change', function ()
             {% if t.subproject_name %}<p class="task-subproject-line">{{t.subproject_name}}</p>{% endif %}
           </div>
           <div class="task-meta">
-            <span class="priority-chip">{{t.priority}}</span>
-            {% if t.due_date %}<span class="due-chip">Fällig {{t.due_date}}</span>{% endif %}
+            <span class="priority-chip">{{translate(t.priority, locale_for(request))}}</span>
+            {% if t.due_date %}<span class="due-chip">{{ translate('Fällig', locale_for(request)) }} {{t.due_date}}</span>{% endif %}
           </div>
           {% if t.assignee_name %}<p class="task-assignee"><span class="avatar-dot">{{t.assignee_name[:1]}}</span>{{t.assignee_name}}</p>{% endif %}
         </article>
         {% else %}
-        <p class="column-empty">Keine Tasks in diesem Status</p>
+        <p class="column-empty">{{ translate('Keine Tasks in diesem Status', locale_for(request)) }}</p>
         {% endfor %}
       </div>
     </section>
@@ -78,10 +78,10 @@ function drop(ev, status){
   const formData = new URLSearchParams({id:task.id, status, position:'0', priority:task.priority || '', assignee_id:task.assignee || ''});
   const csrf = document.cookie.split('; ').find(row => row.startsWith('csrf_token='))?.split('=')[1] || '';
   const feedback = document.getElementById('board-feedback');
-  feedback.textContent = 'Task wird verschoben …';
+  feedback.textContent = {{ translate('Task wird verschoben …', locale_for(request))|tojson }};
   fetch('{{ request.scope.root_path }}/kanban/update', {method:'POST', headers:{'X-CSRF-Token':decodeURIComponent(csrf)}, body:formData})
     .then(response => {
-      if (!response.ok) throw new Error('Verschieben fehlgeschlagen (' + response.status + ').');
+      if (!response.ok) throw new Error({{ translate('Verschieben fehlgeschlagen', locale_for(request))|tojson }} + ' (' + response.status + ').');
       location.reload();
     })
     .catch(error => { feedback.textContent = error.message; });

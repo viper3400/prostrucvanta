@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
 <header class="page-heading">
-  <div><p class="eyebrow">ZUGRIFF &amp; BERECHTIGUNGEN</p><h1>Benutzerverwaltung</h1><p>Steuere, wer Projekte nutzen und den Workspace administrieren kann.</p></div>
-  <a class="button button-secondary" href="{{ request.scope.root_path }}/admin">← Administration</a>
+  <div><p class="eyebrow">{{ translate('ZUGRIFF &amp; BERECHTIGUNGEN', locale_for(request)) }}</p><h1>{{ translate('Benutzerverwaltung', locale_for(request)) }}</h1><p>{{ translate('Steuere, wer Projekte nutzen und den Workspace administrieren kann.', locale_for(request)) }}</p></div>
+  <a class="button button-secondary" href="{{ request.scope.root_path }}/admin">{{ translate('← Administration', locale_for(request)) }}</a>
 </header>
 <section class="panel task-list-panel">
-  <div class="panel-heading"><div><p class="eyebrow">WORKSPACE</p><h2>Benutzer &amp; Rollen</h2></div><span class="project-total">{{ users|length }} Benutzer</span></div>
+  <div class="panel-heading"><div><p class="eyebrow">{{ translate('WORKSPACE', locale_for(request)) }}</p><h2>{{ translate('Benutzer &amp; Rollen', locale_for(request)) }}</h2></div><span class="project-total">{{ users|length }} {{ translate('Benutzer', locale_for(request)) }}</span></div>
   <div class="task-table-scroll"><table class="modern-table user-table">
-    <thead><tr><th>Benutzer</th><th>Projektzugriff</th><th>Administration</th></tr></thead>
+    <thead><tr><th>{{ translate('Benutzer', locale_for(request)) }}</th><th>{{ translate('Projektzugriff', locale_for(request)) }}</th><th>{{ translate('Administration', locale_for(request)) }}</th></tr></thead>
     <tbody>{% for u in users %}
       <tr>
         <td><div class="user-identity"><span class="user-avatar">{{ (u.name or u.email)[0]|upper }}</span><span><strong>{{u.name or 'Unbenannt'}}</strong><small>{{u.email}}</small></span></div></td>
-        <td><form method="post" action="{{ request.scope.root_path }}/admin/users/{{u.id}}/project-access" class="permission-form"><input type="hidden" name="enabled" value="1"><span class="permission-state {{ 'permission-enabled' if 'Project Access' in u.permissions else '' }}">{{ 'Aktiv' if 'Project Access' in u.permissions else 'Kein Zugriff' }}</span><button class="action-button {{ 'action-delete' if 'Project Access' in u.permissions else 'action-edit' }}">{{ 'Entfernen' if 'Project Access' in u.permissions else 'Gewähren' }}</button></form></td>
-        <td><form method="post" action="{{ request.scope.root_path }}/admin/users/{{u.id}}/global-administration" class="permission-form"><input type="hidden" name="enabled" value="1"><span class="permission-state {{ 'permission-enabled' if 'Global Administration' in u.permissions else '' }}">{{ 'Admin' if 'Global Administration' in u.permissions else 'Standard' }}</span><button class="action-button {{ 'action-delete' if 'Global Administration' in u.permissions else 'action-edit' }}">{{ 'Entfernen' if 'Global Administration' in u.permissions else 'Gewähren' }}</button></form></td>
+        <td><form method="post" action="{{ request.scope.root_path }}/admin/users/{{u.id}}/project-access" class="permission-form"><input type="hidden" name="enabled" value="1"><span class="permission-state {{ 'permission-enabled' if 'Project Access' in u.permissions else '' }}">{{ translate('Aktiv', locale_for(request)) if 'Project Access' in u.permissions else translate('Kein Zugriff', locale_for(request)) }}</span><button class="action-button {{ 'action-delete' if 'Project Access' in u.permissions else 'action-edit' }}">{{ translate('Entfernen', locale_for(request)) if 'Project Access' in u.permissions else translate('Gewähren', locale_for(request)) }}</button></form></td>
+        <td><form method="post" action="{{ request.scope.root_path }}/admin/users/{{u.id}}/global-administration" class="permission-form"><input type="hidden" name="enabled" value="1"><span class="permission-state {{ 'permission-enabled' if 'Global Administration' in u.permissions else '' }}">{{ translate('Admin', locale_for(request)) if 'Global Administration' in u.permissions else translate('Standard', locale_for(request)) }}</span><button class="action-button {{ 'action-delete' if 'Global Administration' in u.permissions else 'action-edit' }}">{{ translate('Entfernen', locale_for(request)) if 'Global Administration' in u.permissions else translate('Gewähren', locale_for(request)) }}</button></form></td>
       </tr>
     {% endfor %}</tbody>
   </table></div>

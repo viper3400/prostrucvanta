@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 <header class="page-heading">
-  <div><p class="eyebrow">WORKSPACE EINSTELLUNGEN</p><h1>Administration</h1><p>Verwalte Zugänge und Berechtigungen für deinen Workspace.</p></div>
+  <div><p class="eyebrow">{{ translate('WORKSPACE EINSTELLUNGEN', locale_for(request)) }}</p><h1>{{ translate('Administration', locale_for(request)) }}</h1><p>{{ translate('Verwalte Zugänge und Berechtigungen für deinen Workspace.', locale_for(request)) }}</p></div>
 </header>
 <section class="admin-grid">
   <article class="admin-card">
     <span class="admin-card-icon">♙</span>
-    <p class="eyebrow">ZUGRIFF &amp; BERECHTIGUNGEN</p>
-    <h2>Benutzerverwaltung</h2>
-    <p>Verwalte Projektzugriff und globale Administrationsrechte für alle Benutzer.</p>
-    <a class="button button-primary" href="{{ request.scope.root_path }}/admin/users">Benutzer verwalten <span aria-hidden="true">→</span></a>
+    <p class="eyebrow">{{ translate('ZUGRIFF &amp; BERECHTIGUNGEN', locale_for(request)) }}</p>
+    <h2>{{ translate('Benutzerverwaltung', locale_for(request)) }}</h2>
+    <p>{{ translate('Verwalte Projektzugriff und globale Administrationsrechte für alle Benutzer.', locale_for(request)) }}</p>
+    <a class="button button-primary" href="{{ request.scope.root_path }}/admin/users">{{ translate('Benutzer verwalten', locale_for(request)) }} <span aria-hidden="true">→</span></a>
   </article>
-  <aside class="admin-note"><span class="admin-note-icon">i</span><div><h2>Administratorbereich</h2><p>Änderungen an Berechtigungen wirken sich unmittelbar auf den Zugriff im Workspace aus.</p></div></aside>
+  <aside class="admin-note"><span class="admin-note-icon">i</span><div><h2>{{ translate('Administratorbereich', locale_for(request)) }}</h2><p>{{ translate('Änderungen an Berechtigungen wirken sich unmittelbar auf den Zugriff im Workspace aus.', locale_for(request)) }}</p></div></aside>
 </section>
 {% endblock %}

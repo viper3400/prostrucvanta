@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
 <header class="page-heading">
-  <div><p class="eyebrow">PROJEKTARBEITSPLATZ</p><h1>Projekte</h1><p>Organisiere Vorhaben, Unterprojekte und den Fortschritt an einem Ort.</p></div>
-  <span class="project-total">{{projects|length}} Projekte</span>
+  <div><p class="eyebrow">{{ translate('PROJEKTARBEITSPLATZ', locale_for(request)) }}</p><h1>{{ translate('Projekte', locale_for(request)) }}</h1><p>{{ translate('Organisiere Vorhaben, Unterprojekte und den Fortschritt an einem Ort.', locale_for(request)) }}</p></div>
+  <span class="project-total">{{projects|length}} {{ translate('Projekte', locale_for(request)) }}</span>
 </header>
 
 <section class="create-panel">
-  <div class="section-title"><span class="section-icon" aria-hidden="true">+</span><div><h2>Neues Projekt</h2><p>Lege ein Projekt an und halte dein Team auf Kurs.</p></div></div>
+  <div class="section-title"><span class="section-icon" aria-hidden="true">+</span><div><h2>{{ translate('Neues Projekt', locale_for(request)) }}</h2><p>{{ translate('Lege ein Projekt an und halte dein Team auf Kurs.', locale_for(request)) }}</p></div></div>
   <form method="post" action="{{ request.scope.root_path }}/projects" class="create-project-form">
-    <label class="field"><span>Projektname</span><input name="name" placeholder="z. B. Website-Relaunch" required></label>
-    <label class="field field-description"><span>Beschreibung</span><input name="description" placeholder="Worum geht es bei diesem Projekt?"></label>
-    <label class="field"><span>Status</span><select name="status"><option>Aktiv</option><option>Pausiert</option><option>Abgeschlossen</option><option>Archiviert</option></select></label>
-    <label class="field color-field"><span>Projektfarbe</span><input type="color" name="color" value="#4f46e5"></label>
-    <button class="button button-primary create-button">Projekt erstellen</button>
+    <label class="field"><span>{{ translate('Projektname', locale_for(request)) }}</span><input name="name" placeholder="z. B. Website-Relaunch" required></label>
+    <label class="field field-description"><span>{{ translate('Beschreibung', locale_for(request)) }}</span><input name="description" placeholder="{{ translate('Worum geht es bei diesem Projekt?', locale_for(request)) }}"></label>
+    <label class="field"><span>{{ translate('Status', locale_for(request)) }}</span><select name="status"><option value="Aktiv">{{ translate('Aktiv', locale_for(request)) }}</option><option value="Pausiert">{{ translate('Pausiert', locale_for(request)) }}</option><option value="Abgeschlossen">{{ translate('Abgeschlossen', locale_for(request)) }}</option><option value="Archiviert">{{ translate('Archiviert', locale_for(request)) }}</option></select></label>
+    <label class="field color-field"><span>{{ translate('Projektfarbe', locale_for(request)) }}</span><input type="color" name="color" value="#4f46e5"></label>
+    <button class="button button-primary create-button">{{ translate('Projekt erstellen', locale_for(request)) }}</button>
   </form>
 </section>
 
@@ -22,14 +22,14 @@
     <header class="project-card-heading">
       <div class="project-identity">
         <span class="project-color" style="--project-color:{{p.color}}"></span>
-        <div><h2>{{p.name}}</h2><p>{{p.description or 'Keine Beschreibung hinterlegt'}}</p></div>
+        <div><h2>{{p.name}}</h2><p>{{p.description or translate('Keine Beschreibung hinterlegt', locale_for(request))}}</p></div>
       </div>
-      <span class="status-pill">{{p.status}}</span>
+      <span class="status-pill">{{translate(p.status, locale_for(request))}}</span>
     </header>
     <div class="project-progress">
-      <div class="progress-label"><span>Fortschritt</span><strong>{{p.progress}}%</strong></div>
+      <div class="progress-label"><span>{{ translate('Fortschritt', locale_for(request)) }}</span><strong>{{p.progress}}%</strong></div>
       <div class="progress-track"><span style="width:{{p.progress}}%"></span></div>
-      <small>{{p.done}} von {{p.task_count}} Tasks erledigt</small>
+      <small>{{p.done}} {{ translate('von', locale_for(request)) }} {{p.task_count}} {{ translate('Tasks erledigt', locale_for(request)) }}</small>
     </div>
     <div class="project-actions">
       <form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/edit">
@@ -37,37 +37,37 @@
         <input type="hidden" name="description" value="{{p.description}}">
         <input type="hidden" name="status" value="{{p.status}}">
         <input type="hidden" name="color" value="{{p.color}}">
-        <button class="action-button action-edit" type="submit"><span aria-hidden="true">✎</span> Bearbeiten</button>
+        <button class="action-button action-edit" type="submit"><span aria-hidden="true">✎</span> {{ translate('Bearbeiten', locale_for(request)) }}</button>
       </form>
-      <form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/archive"><button class="action-button" type="submit">Archivieren</button></form>
-      <form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/delete" onsubmit="return confirm('Projekt löschen? Unterprojekte und Tasks müssen entfernt werden. Fortfahren?')"><button class="action-button action-delete" type="submit">Löschen</button></form>
+      <form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/archive"><button class="action-button" type="submit">{{ translate('Archivieren', locale_for(request)) }}</button></form>
+      <form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/delete" onsubmit="return confirm('{{ translate('Projekt löschen? Unterprojekte und Tasks müssen entfernt werden. Fortfahren?', locale_for(request)) }}')"><button class="action-button action-delete" type="submit">{{ translate('Löschen', locale_for(request)) }}</button></form>
     </div>
 
     <section class="subproject-section">
-      <div class="subproject-heading"><div><h3>Unterprojekte</h3><span>{{p.subprojects|length}} Bereiche</span></div></div>
+      <div class="subproject-heading"><div><h3>{{ translate('Unterprojekte', locale_for(request)) }}</h3><span>{{p.subprojects|length}} {{ translate('Bereiche', locale_for(request)) }}</span></div></div>
       <form method="post" action="{{ request.scope.root_path }}/projects/{{p.id}}/subprojects" class="subproject-create">
-        <label class="sr-only" for="subproject-{{p.id}}">Name des Unterprojekts</label>
-        <input id="subproject-{{p.id}}" name="name" placeholder="Unterprojekt hinzufügen …" required>
-        <label class="sr-only" for="subproject-status-{{p.id}}">Status</label>
-        <select id="subproject-status-{{p.id}}" name="status"><option>Aktiv</option><option>Pausiert</option><option>Abgeschlossen</option><option>Archiviert</option></select>
-        <button class="button button-secondary" type="submit">Hinzufügen</button>
+        <label class="sr-only" for="subproject-{{p.id}}">{{ translate('Name des Unterprojekts', locale_for(request)) }}</label>
+        <input id="subproject-{{p.id}}" name="name" placeholder="{{ translate('Unterprojekt hinzufügen …', locale_for(request)) }}" required>
+        <label class="sr-only" for="subproject-status-{{p.id}}">{{ translate('Status', locale_for(request)) }}</label>
+        <select id="subproject-status-{{p.id}}" name="status"><option value="Aktiv">{{ translate('Aktiv', locale_for(request)) }}</option><option value="Pausiert">{{ translate('Pausiert', locale_for(request)) }}</option><option value="Abgeschlossen">{{ translate('Abgeschlossen', locale_for(request)) }}</option><option value="Archiviert">{{ translate('Archiviert', locale_for(request)) }}</option></select>
+        <button class="button button-secondary" type="submit">{{ translate('Hinzufügen', locale_for(request)) }}</button>
       </form>
       {% if p.subprojects %}
       <ul class="subproject-list">
         {% for s in p.subprojects %}
-        <li><span class="subproject-name"><span class="subproject-dot"></span>{{s.name}}</span><span class="subproject-status">{{s.status}}</span>
+        <li><span class="subproject-name"><span class="subproject-dot"></span>{{s.name}}</span><span class="subproject-status">{{translate(s.status, locale_for(request))}}</span>
           <div class="subproject-actions">
-            <form method="post" action="{{ request.scope.root_path }}/subprojects/{{s.id}}/archive"><button class="action-button" type="submit">Archivieren</button></form>
-            <form method="post" action="{{ request.scope.root_path }}/subprojects/{{s.id}}/delete" onsubmit="return confirm('Unterprojekt löschen? Tasks müssen entfernt werden. Fortfahren?')"><button class="action-button action-delete" type="submit" aria-label="Unterprojekt {{s.name}} löschen">Löschen</button></form>
+            <form method="post" action="{{ request.scope.root_path }}/subprojects/{{s.id}}/archive"><button class="action-button" type="submit">{{ translate('Archivieren', locale_for(request)) }}</button></form>
+            <form method="post" action="{{ request.scope.root_path }}/subprojects/{{s.id}}/delete" onsubmit="return confirm('{{ translate('Unterprojekt löschen? Tasks müssen entfernt werden. Fortfahren?', locale_for(request)) }}')"><button class="action-button action-delete" type="submit" aria-label="{{ translate('Unterprojekt löschen', locale_for(request)) }} {{s.name}}">{{ translate('Löschen', locale_for(request)) }}</button></form>
           </div>
         </li>
         {% endfor %}
       </ul>
-      {% else %}<p class="subproject-empty">Noch keine Unterprojekte angelegt.</p>{% endif %}
+      {% else %}<p class="subproject-empty">{{ translate('Noch keine Unterprojekte angelegt.', locale_for(request)) }}</p>{% endif %}
     </section>
   </article>
   {% else %}
-  <section class="empty-state"><span class="empty-icon" aria-hidden="true">✦</span><h2>Dein erstes Projekt wartet</h2><p>Erstelle oben ein Projekt, um Aufgaben und Fortschritt zu organisieren.</p></section>
+  <section class="empty-state"><span class="empty-icon" aria-hidden="true">✦</span><h2>{{ translate('Dein erstes Projekt wartet', locale_for(request)) }}</h2><p>{{ translate('Erstelle oben ein Projekt, um Aufgaben und Fortschritt zu organisieren.', locale_for(request)) }}</p></section>
   {% endfor %}
 </div>
 {% endblock %}
