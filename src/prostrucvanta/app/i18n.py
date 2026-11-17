@@ -6,6 +6,7 @@ TRANSLATIONS = {
         "Tasks": "Tasks",
         "Log out": "Abmelden",
         "Your projects at a glance": "Deine Projekte im Blick",
+        "Due date": "Fälligkeitsdatum",
     },
 }
 

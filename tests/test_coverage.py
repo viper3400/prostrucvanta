@@ -177,17 +177,19 @@ def test_create_task_and_assignment():
         client = TestClient(app, raise_server_exceptions=False, follow_redirects=False)
         _login_client(client, uid)
         token = _get_csrf_token(client)
-        r = client.post("/tasks", data={"title":"T1","project_id":str(pid),"subproject_id":str(sid),"status":"Backlog","priority":"Normal","csrf_token":token})
+        r = client.post("/tasks", data={"title":"T1","project_id":str(pid),"subproject_id":str(sid),"status":"Backlog","priority":"Normal","due_date":"2027-05-12","csrf_token":token})
         assert r.status_code == 303
         with app.state.db.connect() as conn:
-            task = conn.execute("SELECT id,title,project_id,subproject_id FROM tasks WHERE title=?", ("T1",)).fetchone()
+            task = conn.execute("SELECT id,title,project_id,subproject_id,due_date FROM tasks WHERE title=?", ("T1",)).fetchone()
             assert task["project_id"] == pid and task["subproject_id"] == sid
+            assert task["due_date"] == "2027-05-12"
             tid = task["id"]
-        r = client.post(f"/tasks/{tid}/edit", data={"title":"T1","project_id":str(pid),"subproject_id":"","status":"Backlog","priority":"Normal","csrf_token":token})
+        r = client.post(f"/tasks/{tid}/edit", data={"title":"T1","project_id":str(pid),"subproject_id":"","status":"Backlog","priority":"Normal","due_date":"2027-05-19","csrf_token":token})
         assert r.status_code == 303
         with app.state.db.connect() as conn:
-            task2 = conn.execute("SELECT subproject_id FROM tasks WHERE id=?", (tid,)).fetchone()
+            task2 = conn.execute("SELECT subproject_id,due_date FROM tasks WHERE id=?", (tid,)).fetchone()
             assert task2["subproject_id"] is None
+            assert task2["due_date"] == "2027-05-19"
 
 def test_task_status_change():
     with tempfile.TemporaryDirectory() as td:
