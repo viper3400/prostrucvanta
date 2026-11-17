@@ -12,7 +12,7 @@
 <form method="get" class="filter-panel">
   <div class="filter-heading"><div><h2>Board filtern</h2><p>Grenze die angezeigten Tasks ein.</p></div></div>
   <div class="filter-controls">
-    <label class="field"><span>Projekt</span><select name="project"><option value="">Alle Projekte</option>{% for pr in projects %}<option value="{{pr.id}}" {% if selected_project==pr.id %}selected{% endif %}>{{pr.name}}</option>{% endfor %}</select></label>
+    <label class="field"><span>Projekt</span><select name="project" id="project-filter"><option value="">Alle Projekte</option>{% for pr in projects %}<option value="{{pr.id}}" {% if selected_project==pr.id %}selected{% endif %}>{{pr.name}}</option>{% endfor %}</select></label>
     <label class="field"><span>Unterprojekt</span><select name="subproject"><option value="">Alle Unterprojekte</option>{% for sp in subprojects %}<option value="{{sp.id}}" {% if selected_subproject==sp.id %}selected{% endif %}>{{sp.name}}</option>{% endfor %}</select></label>
     <label class="field"><span>Priorität</span><select name="priority"><option value="">Alle Prioritäten</option>{% for p in priorities %}<option value="{{p}}" {% if selected_priority==p %}selected{% endif %}>{{p}}</option>{% endfor %}</select></label>
     <label class="field"><span>Bearbeiter</span><select name="assignee"><option value="">Alle Benutzer</option>{% for u in users %}<option value="{{u.id}}" {% if selected_assignee==u.id %}selected{% endif %}>{{u.name}}</option>{% endfor %}</select></label>
@@ -20,6 +20,12 @@
     <button class="button button-primary filter-submit" type="submit">Filter anwenden</button>
   </div>
 </form>
+<script>
+document.getElementById('project-filter').addEventListener('change', function () {
+  document.querySelector('select[name="subproject"]').value = '';
+  this.form.requestSubmit();
+});
+</script>
 
 <div class="board-scroll">
   <div class="board-grid">

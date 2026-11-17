@@ -411,6 +411,25 @@ def create_app(db_path: str | None = None, session_secret: str | None = None, ba
         assignee_id = request.query_params.get("assignee")
         search = request.query_params.get("search","").strip()
         with db.connect() as conn:
+            if subproject_id and not project_id:
+                subproject_project = conn.execute(
+                    "SELECT project_id FROM subprojects WHERE id=?",
+                    (int(subproject_id),),
+                ).fetchone()
+                if subproject_project:
+                    project_id = str(subproject_project["project_id"])
+
+            subproject_sql = "SELECT id,name,project_id FROM subprojects"
+            subproject_params = []
+            if project_id:
+                subproject_sql += " WHERE project_id=?"
+                subproject_params.append(int(project_id))
+            subproject_sql += " ORDER BY name"
+            subprojects = [dict(r) for r in conn.execute(subproject_sql, subproject_params)]
+            valid_subproject_ids = {sp["id"] for sp in subprojects}
+            if subproject_id and int(subproject_id) not in valid_subproject_ids:
+                subproject_id = None
+
             sql = """
                 SELECT t.*, p.name as project_name, s.name as subproject_name, u.name as assignee_name, p.color as project_color
                 FROM tasks t
@@ -439,7 +458,6 @@ def create_app(db_path: str | None = None, session_secret: str | None = None, ba
             tasks = [dict(r) for r in conn.execute(sql, params)]
             projects = [dict(r) for r in conn.execute("SELECT id,name FROM projects")]
             users = [dict(r) for r in conn.execute("SELECT id,name FROM users")]
-            subprojects = [dict(r) for r in conn.execute("SELECT id,name,project_id FROM subprojects")]
         return templates.TemplateResponse(request, "kanban.html", {
             "current_user": user,
             "tasks": tasks,

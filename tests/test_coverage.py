@@ -239,6 +239,41 @@ def test_kanban_sorting():
             assert rows[0]["id"] == t2 and rows[0]["position"] == 0
             assert rows[1]["id"] == t1 and rows[1]["position"] == 1
 
+def test_kanban_subproject_filter_is_scoped_to_selected_project():
+    with tempfile.TemporaryDirectory() as td:
+        app = _make_app(os.path.join(td, "db.sqlite"))
+        uid = _create_user(app)
+        with app.state.db.connect() as conn:
+            now = utcnow()
+            for name in ("Project A", "Project B"):
+                conn.execute(
+                    "INSERT INTO projects(name,status,color,created_at,updated_at,owner_id) VALUES(?,?,?,?,?,?)",
+                    (name, "Aktiv", "#000", now, now, uid),
+                )
+            project_a, project_b = [
+                row["id"] for row in conn.execute(
+                    "SELECT id FROM projects ORDER BY id"
+                ).fetchall()
+            ]
+            conn.execute(
+                "INSERT INTO subprojects(project_id,name,status,created_at,updated_at) VALUES(?,?,?,?,?)",
+                (project_a, "Subproject A", "Aktiv", now, now),
+            )
+            subproject_a = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
+            conn.execute(
+                "INSERT INTO subprojects(project_id,name,status,created_at,updated_at) VALUES(?,?,?,?,?)",
+                (project_b, "Subproject B", "Aktiv", now, now),
+            )
+
+        client = TestClient(app, raise_server_exceptions=False)
+        _login_client(client, uid)
+        response = client.get(f"/kanban?project={project_a}")
+
+        assert response.status_code == 200
+        assert f'value="{subproject_a}"' in response.text
+        assert ">Subproject A</option>" in response.text
+        assert ">Subproject B</option>" not in response.text
+
 def test_task_move_consistency():
     with tempfile.TemporaryDirectory() as td:
         db_path = os.path.join(td, "db.sqlite")
