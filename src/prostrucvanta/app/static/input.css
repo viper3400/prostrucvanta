@@ -28,6 +28,7 @@
   .nav-links > a:hover { background: #eef2ff; color: #4338ca; }
   .nav-links form { margin: 0; }
   .page-content { min-width: 0; }
+  .app-footer { margin-top: 24px; color: #94a3b8; font-size: 11px; text-align: center; }
   .page-heading, .panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
   .page-heading { margin-bottom: 24px; }
   .page-heading h1, .panel-heading h2 { margin: 0; }

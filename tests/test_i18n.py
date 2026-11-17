@@ -27,6 +27,7 @@ def test_language_can_be_selected_and_persists_for_login_page():
         assert response.status_code == 200
         assert '<html lang="en">' in response.text
         assert "Sign in" in response.text
+        assert "ProStrucVanta v0.2.0" in response.text
 
         csrf_token = client.cookies["csrf_token"]
         response = client.post(

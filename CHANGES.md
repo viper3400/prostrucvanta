@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0
+
+### Features
+- English and German interface with a persistent language preference
+- Due dates editable when creating and editing tasks
+- Improved Kanban filtering and project-scoped subproject selection
+
 ## 0.1.0
 Initial MVP implementation with projects, subprojects, tasks, kanban, Google OAuth, user permissions.
 
@@ -20,4 +27,3 @@ Initial MVP implementation with projects, subprojects, tasks, kanban, Google OAu
 - README with Funktionsübersicht, Architektur, Installation, Konfiguration, Google-OAuth-Einrichtung, lokale Entwicklung, PyHost-Integration, Datenbankpfad, Reverse-Proxy-Beispiel, Tests, Wheel Build, Release-Vorgehen
 - `.env.example` with all required env vars including `PYPROJECTS_BASE_PATH`
 - `AGENTS.md` with project overview and plugin contract
-

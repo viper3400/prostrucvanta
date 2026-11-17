@@ -54,6 +54,7 @@ def create_app(db_path: str | None = None, session_secret: str | None = None, ba
     templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
     translations = TRANSLATIONS
     templates.env.globals["translate"] = translate
+    templates.env.globals["app_version"] = APP_VERSION
     def locale_for(request: Request) -> str:
         saved = request.session.get("locale")
         if saved in translations:
