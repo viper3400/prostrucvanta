@@ -18,6 +18,7 @@
     <label class="field"><span>Bearbeiter</span><select name="assignee"><option value="">Alle Benutzer</option>{% for u in users %}<option value="{{u.id}}" {% if selected_assignee==u.id %}selected{% endif %}>{{u.name}}</option>{% endfor %}</select></label>
     <label class="field field-search"><span>Suche</span><input name="search" placeholder="Task suchen …" value="{{search}}"></label>
     <button class="button button-primary filter-submit" type="submit">Filter anwenden</button>
+    <a class="button button-secondary filter-reset" href="{{ request.scope.root_path }}/kanban">Filter zurücksetzen</a>
   </div>
 </form>
 <script>

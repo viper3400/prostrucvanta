@@ -273,6 +273,7 @@ def test_kanban_subproject_filter_is_scoped_to_selected_project():
         assert f'value="{subproject_a}"' in response.text
         assert ">Subproject A</option>" in response.text
         assert ">Subproject B</option>" not in response.text
+        assert 'href="/kanban">Filter zurücksetzen</a>' in response.text
 
 def test_task_move_consistency():
     with tempfile.TemporaryDirectory() as td:
